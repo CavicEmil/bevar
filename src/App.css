@@ -1,0 +1,13 @@
+@import url("https://use.typekit.net/pvc7non.css");
+@import "tailwindcss";
+
+@theme {
+    --color-pearl-brite: #E7E5E5;
+    --color-pig-pink: #FFD5E2;
+    --color-vivid-rose: #FF6F9C;
+    --color-crimson-shade: #620E28;
+    --color-burgundy-shade: #390918;
+
+    --font-main: helvetica-neue-lt-pro, sans-serif;
+}
+
