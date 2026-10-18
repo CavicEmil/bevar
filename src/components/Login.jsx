@@ -15,7 +15,7 @@ export default function Login() {
     setLoading(true);
     try {
       await signIn(email, password);
-      navigate("/recipes"); // context updates automatically via onAuthStateChange
+      navigate("/recipes"); // context updates automatically via onAuthStateChange, change to where it navigates to once flow is set in figma
     } catch (err) {
       setError(err.message);
     } finally {

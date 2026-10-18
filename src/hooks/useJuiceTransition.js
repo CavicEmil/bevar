@@ -1,0 +1,3 @@
+function JuiceTransition() {
+    return null;
+}

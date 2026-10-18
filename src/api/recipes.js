@@ -1,7 +1,7 @@
 /* the big one - this is where the apps core comes together */
 
 import { supabase } from './client';
-import { unwrap } from './helpers';
+import { unwrap } from './helper';
 
 /* SQL query to get the recipe info across tables we need - keeping one source of truth,
     no touching the recipes info across 5 different components in 25 different ways */
