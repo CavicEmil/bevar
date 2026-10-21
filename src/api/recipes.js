@@ -20,8 +20,8 @@ export async function getRecipes({ category, difficulty, search } = {}) {
     let query = supabase.from('recipes_with_rating').select(`*`);
     if (category) query = query.eq('category_id', category);
     if (difficulty) query = query.eq('difficulty_id', difficulty);
-    if (search) query = query.ilike('title', `%${search}`);
-    return unwrap(await query.order('created_at', { ascending: false }));
+    if (search) query = query.ilike('title', `%${search}%`);
+    return unwrap(await query);
 }
 
 /* api request to get a single recipe by id */
