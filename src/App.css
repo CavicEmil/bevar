@@ -2,12 +2,14 @@
 @import "tailwindcss";
 
 @theme {
-    --color-pearl-brite: #E7E5E5;
-    --color-pig-pink: #FFD5E2;
-    --color-vivid-rose: #FF6F9C;
-    --color-crimson-shade: #620E28;
-    --color-burgundy-shade: #390918;
+    /* colors named using https://colordesigner.io/color-name-finder */
+    --color-rose-fantasy: #F1E8EA;
+    --color-poplar-pink: #FFD5E2;
+    --color-spicy-berry: #CC2E5F;
+    --color-dark-humor: #620E28;
+    --color-rhodophobia: #390918;
 
-    --font-main: helvetica-neue-lt-pro, sans-serif;
+    --font-the-one: helvetica-neue-lt-pro, sans-serif;
+
 }
 
