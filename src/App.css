@@ -11,5 +11,50 @@
 
     --font-the-one: helvetica-neue-lt-pro, sans-serif;
 
+            /* Main page headings: 16px, 140%, semibold */
+            --text-heading-main: 1rem;
+            --text-heading-main--line-height: 1.4;
+            --text-heading-main--font-weight: 600;
+
+            /* Tags, small cards, small buttons, secondary text: 12px, 140%, semibold */
+            --text-small: 0.75rem;
+            --text-small--line-height: 1.4;
+            --text-small--font-weight: 600;
+
+            /* Body text, Big cards text: 14px, 140%, regular */
+            --text-body: 0.875rem;
+            --text-body--line-height: 1.4;
+            --text-body--font-weight: 400;
+
+            /* Big buttons: 14px, 140%, semibold */
+            --text-button-big: 0.875rem;
+            --text-button-big--line-height: 1.4;
+            --text-button-big--font-weight: 600;
+
+            /* Subpage headings (everything outside of navigation views): 24px, 140%, bold */
+            --text-heading-subpage: 1.5rem;
+            --text-heading-subpage--line-height: 1.4;
+            --text-heading-subpage--font-weight: 700;
+
+            /* Eyebrow text: 10px, 15px line height, semibold */
+            --text-eyebrow: 0.625rem;
+            --text-eyebrow--line-height: 0.9375rem;
+            --text-eyebrow--font-weight: 600;
+
+
+
+  /* Spacing */
+--spacing-page: 20px;        /* Padding around entire page content */
+--spacing-section: 20px;     /* Gap between sections and containers */
+--spacing-related: 10px;     /* Gap between closely related elements  */
+--spacing-button: 14px;      /* Padding inside button around text */
+--spacing-card-lg: 16px;     /* Padding inside large cards */
+--spacing-card-sm: 12px;     /* Padding inside small cards */
+
+/* Corner radius */
+--radius-button: 14px;       /* Button corner radius */
+--radius-icon: 14px;         /* Icon container corner radius */
+--radius-card: 20px;         /* Corner radius for all cards */
 }
+
 
