@@ -21,7 +21,7 @@ export async function getRecipes({ category, difficulty, search } = {}) {
     if (category) query = query.eq('category_id', category);
     if (difficulty) query = query.eq('difficulty_id', difficulty);
     if (search) query = query.ilike('title', `%${search}%`);
-    return unwrap(await query);
+    return unwrap(await query.order('created_at', { ascending: false }));
 }
 
 /* api request to get a single recipe by id */
