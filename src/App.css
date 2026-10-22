@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,100..900;1,100..900&display=swap");
+@import url("https://use.typekit.net/pvc7non.css");
 @import "tailwindcss";
 
 @theme {
@@ -10,8 +10,8 @@
     --color-rhodophobia: #390918;
     --color-white: #FFFFFF;
 
-    --font-the-one: "Inter", sans-serif;
-
+ --font-the-one: "helvetica-neue-lt-pro", sans-serif;
+ 
     /* Heading 1: use for prominent titles, like guide or single receipe */
 
 
