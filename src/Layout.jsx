@@ -6,7 +6,7 @@ export default function Layout() {
   return (
     <>
       <Header />
-      <main className="min-h-screen w-screen bg-pig-pink">
+      <main>
         <Outlet />   
       </main>
       <Footer />

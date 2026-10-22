@@ -13,6 +13,8 @@
     --font-the-one: "Inter", sans-serif;
 
     /* Heading 1: use for prominent titles, like guide or single receipe */
+
+
     --text-heading-1: 24px;
     --text-heading-1--line-height: 1.4;
     --text-heading-1--font-weight: 600;
