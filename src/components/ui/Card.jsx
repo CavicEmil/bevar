@@ -1,5 +1,6 @@
 const surfaces = {
   default:  "bg-white border-neutral-200",
+  viewbg:   "bg-poplar-pink border-transparent rounded-t-card",
   hero:     "bg-white border-neutral-200 shadow-md",
   profileA: "bg-poplar-pink border-transparent",
   profileB: "bg-dark-humor border-transparent text-rose-fantasy",

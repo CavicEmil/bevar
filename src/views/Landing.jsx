@@ -5,12 +5,12 @@ import Card from "../components/ui/Card";
 export default function Layout() {
 
   return (
-    <Card>
+    <Card variant="viewbg">
       <h1>I AM THE LANDING PAGE MWAHAHAHA</h1>
 
       {/* Temporary input and validation preview */}
       <form
-        onSubmit={handleSubmit}
+        
         className="flex flex-col gap-section bg-rose-fantasy p-page"
       >
         <Input variant="name" />
