@@ -3,7 +3,7 @@
 import { supabase } from './client';
 import { unwrap } from './helper';
 
-/* Shared recipe data, including categories and their related methods */
+/* Shared recipe data and related properties */
 const recipeSelect = `
     *,
     fruits(*),
@@ -20,14 +20,59 @@ const recipeDetailSelect = `
     step_by_step_guide (id, step_number, instruction, media_path, media_type)
 `;
 
-/* Fetch recipes with optional filters using database IDs */
-export async function getRecipes({ category, method, difficulty, search } = {}) {
+/* Apply filters and search across the related recipe properties */
+export async function getRecipes({
+    category, method, difficulty, search,
+    fruitIds = [], categoryIds = [], difficultyIds = [],
+    prepTimeRange = null,
+} = {}) {
     let query = supabase.from('recipes').select(recipeSelect);
+
+    /* Apply selected filters in Supabase */
     if (category) query = query.eq('category_id', category);
     if (method) query = query.eq('method_id', method);
     if (difficulty) query = query.eq('difficulty_id', difficulty);
-    if (search) query = query.ilike('title', `%${search}%`);
-    return unwrap(await query);
+
+    if (fruitIds.length) query = query.in('fruit_id', fruitIds);
+    if (categoryIds.length) query = query.in('category_id', categoryIds);
+    if (difficultyIds.length) query = query.in('difficulty_id', difficultyIds);
+
+    if (prepTimeRange?.min != null) {
+        query = query.gte('prep_time_minutes', prepTimeRange.min);
+    }
+
+    if (prepTimeRange?.max != null) {
+        query = prepTimeRange.maxExclusive
+            ? query.lt('prep_time_minutes', prepTimeRange.max)
+            : query.lte('prep_time_minutes', prepTimeRange.max);
+    }
+
+    const recipes = unwrap(await query.order('title')) ?? [];
+    const terms = search?.trim().toLowerCase().split(/\s+/).filter(Boolean) ?? [];
+
+    if (!terms.length) return recipes;
+
+    /* Search the fetched data for this small recipe collection */
+    return recipes.filter((recipe) => {
+        const searchableText = [
+            recipe.title,
+            recipe.description,
+            recipe.storage,
+            recipe.prep_time_minutes,
+            recipe.servings,
+            recipe.fruits?.name,
+            recipe.category?.category,
+            recipe.category?.description,
+            recipe.method?.method,
+            recipe.method?.description,
+            recipe.difficulty?.difficulty,
+        ]
+            .filter(value => value != null)
+            .join(' ')
+            .toLowerCase();
+
+        return terms.every(term => searchableText.includes(term));
+    });
 }
 
 /* Fetch a single recipe with all related details */

@@ -3,11 +3,14 @@
 import { supabase } from './client';
 import { unwrap } from './helper';
 
-/* Fetch categories together with their related methods */
+
+export const getFruits = async () =>
+    unwrap(await supabase.from('fruits').select('*').order('name'));
+
+/* Include the methods belonging to each category */
 export const getCategories = async () =>
     unwrap(await supabase.from('category').select('*, method(*)').order('category'));
 
-/* Fetch methods together with their parent category */
 export const getMethods = async () =>
     unwrap(await supabase.from('method').select('*, category(*)').order('method'));
 
