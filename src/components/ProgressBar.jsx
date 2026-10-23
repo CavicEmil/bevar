@@ -1,10 +1,6 @@
 import Eyebrow from "./ui/Eyebrow";
-import Progress from "./ui/Progress";
 
-/* Composition: existing label + progress primitive + optional onboarding hint.
-   Supply the same ordered steps and current step used to display the content.
-   For guides, these are recipe.step_by_step_guide rows, ordered by step_number.
-   Completion is a separate screen, after the last real step. */
+// The parent owns navigation. Pass the same ordered steps used by the content.
 export default function ProgressBar({
   steps = [],
   currentStepId,
@@ -14,12 +10,14 @@ export default function ProgressBar({
 }) {
   if (!Array.isArray(steps) || steps.length === 0) return null;
 
-  const index = steps.findIndex(step => step.id === currentStepId);
-  if (index === -1) return null;
+  const index = steps.findIndex((step) => step.id === currentStepId);
+  if (index === -1 && !isComplete) return null;
 
+  const total = steps.length;
+  const current = isComplete ? total : index + 1;
   const label = isComplete
     ? "✓  WELL PRESERVED"
-    : `STEP ${index + 1} OF ${steps.length}`;
+    : `STEP ${current} OF ${total}`;
   const isOnboarding = variant === "onboarding";
 
   return (
@@ -37,10 +35,24 @@ export default function ProgressBar({
 
       {!isComplete && (
         <>
-          <Progress value={index + 1} max={steps.length} label={label} />
+          <div
+            role="progressbar"
+            aria-label="Step progress"
+            aria-valuemin={0}
+            aria-valuemax={total}
+            aria-valuenow={current}
+            aria-valuetext={label}
+            className="h-[4px] w-full overflow-hidden rounded-[4px] bg-white"
+          >
+            <div
+              className="h-full bg-spicy-berry transition-[width] duration-300 ease-out motion-reduce:transition-none"
+              style={{ width: `${(current / total) * 100}%` }}
+            />
+          </div>
+
           {isOnboarding && (
             <p className="m-0 text-right text-[12px] leading-[18px] font-normal">
-              we can change these choices later
+              You can change these choices later
             </p>
           )}
         </>
