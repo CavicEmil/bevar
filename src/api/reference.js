@@ -6,9 +6,6 @@ import { unwrap } from './helpers';
 export const getCategories = () => 
     unwrap(supabase.from('category').select('*').order('category'));
 
-export const getMethods = () => 
-    unwrap(supabase.from('method').select('*').order('method'));
-
 export const getDifficulties = () => 
     unwrap(supabase.from('difficulty').select('*').order('level'));
 
@@ -17,3 +14,6 @@ export const getEquipment = () =>
 
 export const getIngredients = () => 
     unwrap(supabase.from('ingredients').select('*').order('name'));
+
+export const getMethods = () =>
+    unwrap(supabase.from('method').select('*, category(*)').order('method'));

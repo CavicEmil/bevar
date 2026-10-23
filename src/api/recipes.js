@@ -1,31 +1,36 @@
-/* the big one - this is where the apps core comes together */
+/* Core recipe queries */
 
 import { supabase } from './client';
 import { unwrap } from './helper';
 
-
-/* SQL query to get the recipe info across tables we need - keeping one source of truth,
-    no touching the recipes info across 5 different components in 25 different ways */
-const recipeDetailSelect = `
+/* Shared recipe data, including categories and their related methods */
+const recipeSelect = `
     *,
-    fruits(id, name),
-    category(name),
-    difficulty(name, level),
+    fruits(*),
+    category(*, method(*)),
+    method(*),
+    difficulty(*)
+`;
+
+/* Additional information for the single recipe page */
+const recipeDetailSelect = `
+    ${recipeSelect},
     recipeingredients (amount, unit, ingredients (id, name)),
     recipe_equipment (equipment (id, name), equipment_amount),
     step_by_step_guide (id, step_number, instruction, media_path, media_type)
 `;
 
-/* api request to get recipes from database */
-export async function getRecipes({ category, difficulty, search } = {}) {
-    let query = supabase.from('recipes').select(`*`);
+/* Fetch recipes with optional filters using database IDs */
+export async function getRecipes({ category, method, difficulty, search } = {}) {
+    let query = supabase.from('recipes').select(recipeSelect);
     if (category) query = query.eq('category_id', category);
+    if (method) query = query.eq('method_id', method);
     if (difficulty) query = query.eq('difficulty_id', difficulty);
-    if (search) query = query.ilike('title', `%${search}`);
+    if (search) query = query.ilike('title', `%${search}%`);
     return unwrap(await query);
 }
 
-/* api request to get a single recipe by id */
+/* Fetch a single recipe with all related details */
 export async function getRecipe(id) {
     return unwrap(await supabase
         .from('recipes')
@@ -34,11 +39,12 @@ export async function getRecipe(id) {
         .single());
 }
 
-/* we might want to also have users CREATE and DELETE recipes */
+/* Create a recipe */
 export async function createRecipe(payload) {
     return unwrap(await supabase.rpc('create_recipe', { payload }));
 }
 
+/* Delete a recipe */
 export async function deleteRecipe(id) {
     return unwrap(await supabase.from('recipes').delete().eq('id', id));
 }
