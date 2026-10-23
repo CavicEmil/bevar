@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router";
 import { signUp } from "../api/auth";
 import Input from "./ui/Input";
+import Card from "./ui/Card";
 
 export default function SignUp() {
   const [firstName, setFirstName] = useState("");
@@ -51,17 +52,19 @@ export default function SignUp() {
   }
 
   return (
+  <Card
+    variant="default"
+    size="lg"
+    className="
+      mx-auto w-full max-w-[420px]
+      font-the-one text-dark-humor
+    "
+  >
     <form
-  onSubmit={handleSubmit}
-  aria-label="Create an account"
-  aria-busy={loading}
-  className="
-    mx-auto flex w-full max-w-[420px]
-    flex-col gap-section
-    px-page py-section
-    font-the-one text-dark-humor
-  "
->
+      onSubmit={handleSubmit}
+      aria-busy={loading}
+      className="flex w-full flex-col gap-section"
+    >
       {submitted ? (
         <div
           role="status"
@@ -194,5 +197,6 @@ export default function SignUp() {
         </Link>
       </div>
     </form>
-  );
+  </Card>
+);
 }
