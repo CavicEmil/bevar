@@ -1,5 +1,6 @@
 import Input from "../components/ui/Input";
 import Button from "../components/ui/Button";
+import Card from "../components/ui/Card";
 
 export default function Layout() {
   function handleSubmit(event) {
@@ -8,7 +9,7 @@ export default function Layout() {
   }
 
   return (
-    <>
+    <Card>
       <h1>I AM THE LANDING PAGE MWAHAHAHA</h1>
 
       {/* Temporary input and validation preview */}
@@ -33,6 +34,6 @@ export default function Layout() {
       <div className="bg-rose-fantasy p-page">
         <Input variant="search" />
       </div>
-    </>
+    </Card>
   );
 }
