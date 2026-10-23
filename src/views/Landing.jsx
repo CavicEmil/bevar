@@ -10,7 +10,6 @@ export default function Layout() {
 
       {/* Temporary input and validation preview */}
       <form
-        onSubmit={handleSubmit}
         className="flex flex-col gap-section bg-rose-fantasy p-page"
       >
         <Input variant="name" />
