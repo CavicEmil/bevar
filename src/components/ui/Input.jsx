@@ -33,9 +33,10 @@ const variants = {
     label: "Password",
     name: "password",
     type: "password",
-    placeholder: "At least 8 characters",
+    placeholder: "Password",
     autoComplete: "new-password",
     minLength: 8,
+    pattern: "(?=.*[0-9])(?=.*[^A-Za-z0-9\\s]).{8,}",
     required: true,
   },
 
@@ -58,8 +59,12 @@ const variants = {
   },
 };
 
-/* Translate browser validation results into inline messages */
+/* Password feedback is handled by the requirements checklist */
 function getValidationMessage(input) {
+  if (input.type === "password") {
+    return "";
+  }
+
   const { validity } = input;
 
   if (validity.badInput) {
@@ -68,9 +73,7 @@ function getValidationMessage(input) {
 
   if (
     validity.valueMissing ||
-    (input.required &&
-      input.type === "text" &&
-      !input.value.trim())
+    (input.required && input.type === "text" && !input.value.trim())
   ) {
     return "Please fill in this field.";
   }
@@ -119,6 +122,9 @@ export default function Input({
 
   const [touched, setTouched] = useState(false);
   const [validationError, setValidationError] = useState("");
+  const [currentValue, setCurrentValue] = useState(
+    inputProps.defaultValue ?? ""
+  );
 
   const {
     label: defaultLabel,
@@ -126,14 +132,45 @@ export default function Input({
   } = variants[variant] || variants.name;
 
   const isCalculator = variant === "calculator";
+  const isPassword = variant === "password";
+
   const fieldLabel = label ?? defaultLabel;
   const fieldUnit = unit ?? (isCalculator ? "g" : undefined);
+  const value = String(inputProps.value ?? currentValue);
 
-  /* External errors can be supplied by the page */
+  /* Update each password requirement while typing */
+  const requirements = [
+    {
+      label: "At least 8 characters",
+      met: value.length >= 8,
+    },
+    {
+      label: "At least 1 number",
+      met: /[0-9]/.test(value),
+    },
+    {
+      label: "At least 1 special character",
+      met: /[^A-Za-z0-9\s]/.test(value),
+    },
+  ];
+
+  const passwordIsValid = requirements.every(
+    (requirement) => requirement.met
+  );
+
+  /* Also reveal requirements if an empty password is submitted */
+  const showRequirements = isPassword && (value.length > 0 || touched);
+
+  /* External errors can still be supplied by the page */
   const message = error || validationError;
+
+  const isInvalid =
+    Boolean(message) ||
+    (isPassword && touched && !passwordIsValid);
 
   const describedBy = [
     fieldUnit ? `${inputId}-unit` : null,
+    showRequirements ? `${inputId}-requirements` : null,
     message ? `${inputId}-error` : null,
   ]
     .filter(Boolean)
@@ -142,7 +179,7 @@ export default function Input({
   function validate(input) {
     const message = getValidationMessage(input);
 
-    /* Include custom validation when the form is submitted */
+    /* Native password constraints still prevent invalid submission */
     input.setCustomValidity(message);
     setValidationError(message);
   }
@@ -155,6 +192,8 @@ export default function Input({
   }
 
   function handleChange(event) {
+    setCurrentValue(event.currentTarget.value);
+
     /* Clear previous custom validity before checking again */
     event.currentTarget.setCustomValidity("");
 
@@ -166,7 +205,7 @@ export default function Input({
   }
 
   function handleInvalid(event) {
-    /* Show an inline message instead of the browser popup */
+    /* Suppress the browser popup and use inline feedback */
     event.preventDefault();
     setTouched(true);
     event.currentTarget.setCustomValidity("");
@@ -198,7 +237,7 @@ export default function Input({
           onChange={handleChange}
           onBlur={handleBlur}
           onInvalid={handleInvalid}
-          aria-invalid={message ? true : undefined}
+          aria-invalid={isInvalid || undefined}
           aria-describedby={describedBy || undefined}
           className={`
             w-full min-w-0
@@ -234,7 +273,49 @@ export default function Input({
         )}
       </div>
 
-      {/* Announce validation messages to assistive technology */}
+      {/* Each checkmark turns green when its requirement is met */}
+      {showRequirements && (
+        <ul
+          id={`${inputId}-requirements`}
+          className="flex list-none flex-col gap-1 text-small"
+        >
+          {requirements.map(({ label, met }) => (
+            <li
+              key={label}
+              className={`
+                flex items-center gap-2
+                ${met ? "text-green-700" : "text-dark-humor/50"}
+              `}
+            >
+              <svg
+                aria-hidden="true"
+                width="14"
+                height="14"
+                viewBox="0 0 14 14"
+                fill="none"
+                className="shrink-0"
+              >
+                <path
+                  d="M2.5 7L5.5 10L11.5 4"
+                  stroke="currentColor"
+                  strokeWidth="1.8"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+
+              <span>
+                {label}
+                <span className="sr-only">
+                  {met ? " — met" : " — not met"}
+                </span>
+              </span>
+            </li>
+          ))}
+        </ul>
+      )}
+
+      {/* Announce other validation messages to assistive technology */}
       <p
         id={`${inputId}-error`}
         aria-live="polite"
