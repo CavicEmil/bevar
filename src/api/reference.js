@@ -1,19 +1,21 @@
-/* also known as look up tables, this module handles all read only tables */
+/* Read-only lookup tables */
 
 import { supabase } from './client';
-import { unwrap } from './helpers';
+import { unwrap } from './helper';
 
-export const getCategories = () => 
-    unwrap(supabase.from('category').select('*').order('category'));
+/* Fetch categories together with their related methods */
+export const getCategories = async () =>
+    unwrap(await supabase.from('category').select('*, method(*)').order('category'));
 
-export const getDifficulties = () => 
-    unwrap(supabase.from('difficulty').select('*').order('level'));
+/* Fetch methods together with their parent category */
+export const getMethods = async () =>
+    unwrap(await supabase.from('method').select('*, category(*)').order('method'));
 
-export const getEquipment = () => 
-    unwrap(supabase.from('equipment').select('*').order('name'));
+export const getDifficulties = async () =>
+    unwrap(await supabase.from('difficulty').select('*').order('level'));
 
-export const getIngredients = () => 
-    unwrap(supabase.from('ingredients').select('*').order('name'));
+export const getEquipment = async () =>
+    unwrap(await supabase.from('equipment').select('*').order('name'));
 
-export const getMethods = () =>
-    unwrap(supabase.from('method').select('*, category(*)').order('method'));
+export const getIngredients = async () =>
+    unwrap(await supabase.from('ingredients').select('*').order('name'));
