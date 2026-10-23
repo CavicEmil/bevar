@@ -12,11 +12,12 @@ const TIMES = [
   { id: "60to120", label: "1–2 hours", min: 60, max: 120, maxExclusive: false },
   { id: "all", label: "No time limit" },
 ];
-const emptyFilters = () => ({ fruitIds: [], methodIds: [], difficultyIds: [], preparationTime: "all" });
+const emptyFilters = () => ({ fruitIds: [], categoryIds: [], difficultyIds: [], preparationTime: "all" });
 
 // The view opens this card and handles onApply(filters).
 // Pass options when the view already has the reference data; otherwise load it here.
-// For relative method/difficulty icon paths, pass the existing Storage bucket names.
+// Category icons use the existing category-images bucket.
+// For relative difficulty icon paths, pass the existing Storage bucket name.
 export default function FilterCard({ initialFilters, options, onApply, imageBuckets = {}, className = "" }) {
   const [filters, setFilters] = useState(() => ({ ...emptyFilters(), ...initialFilters }));
   const [loadedOptions, setLoadedOptions] = useState(null);
@@ -32,12 +33,12 @@ export default function FilterCard({ initialFilters, options, onApply, imageBuck
       try {
         const results = await Promise.all([
           supabase.from("fruits").select("id,name,image_path").order("name"),
-          supabase.from("method").select("id,method,method_image_path").order("method"),
+          supabase.from("category").select("id,category,category_image_path").order("category"),
           supabase.from("difficulty").select("id,difficulty,difficulty_image_path,level").order("level"),
         ]);
         const failed = results.find(result => result.error);
         if (failed) throw failed.error;
-        if (!cancelled) setLoadedOptions({ fruits: results[0].data, methods: results[1].data, difficulties: results[2].data });
+        if (!cancelled) setLoadedOptions({ fruits: results[0].data, categories: results[1].data, difficulties: results[2].data });
       } catch {
         if (!cancelled) setLoadError("Could not load filters. Please reopen and try again.");
       }
@@ -48,7 +49,7 @@ export default function FilterCard({ initialFilters, options, onApply, imageBuck
 
   const groups = [
     { key: "fruitIds", label: "Fruit", items: data?.fruits ?? [], name: "name" },
-    { key: "methodIds", label: "Method", items: data?.methods ?? [], name: "method", image: "method_image_path", bucket: imageBuckets.method },
+    { key: "categoryIds", label: "Categories", items: data?.categories ?? [], name: "category", image: "category_image_path", bucket: imageBuckets.category ?? "category-images" },
     { key: "difficultyIds", label: "Difficulty", items: data?.difficulties ?? [], name: "difficulty", image: "difficulty_image_path", bucket: imageBuckets.difficulty },
   ];
   const time = TIMES.find(item => item.id === filters.preparationTime) ?? TIMES[3];
