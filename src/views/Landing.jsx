@@ -3,10 +3,6 @@ import Button from "../components/ui/Button";
 import Card from "../components/ui/Card";
 
 export default function Layout() {
-  function handleSubmit(event) {
-    event.preventDefault();
-    alert("All fields are valid.");
-  }
 
   return (
     <Card>
