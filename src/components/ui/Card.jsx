@@ -10,7 +10,7 @@ const sizes = {
   lg: "p-[--spacing-card-lg]",
   sm: "p-[--spacing-card-sm]",
 };
-const radius = "rounded-[--radius-card]";
+const radius = "rounded-card";
 
 export default function Card({ variant = "default", size = "lg", className = "", children }) {
   return (
