@@ -2,8 +2,14 @@ import { supabase } from './client';
 import { unwrap } from './helpers';
 
 /* get all the articles from the db */
-export const getArticles = () =>
-    unwrap(supabase.from('articles').select('*').order('created_at', { ascending: false }));
+export async function getArticles({ category } = {}) {
+  let query = supabase
+    .from("articles")
+    .select("*")
+    .order("created_at", { ascending: false });
+  if (category) query = query.eq("article_category", category);
+  return unwrap(await query);
+}
 
 /* get a single article by id */
 export async function getArticle(id) {
