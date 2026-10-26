@@ -1,19 +1,18 @@
 const CATEGORY_IMAGE_BUCKET = "category-images";
 
-/* Build a public Storage URL, or use an existing full URL */
+/* Build a public Storage URL or use an existing full URL */
 function getImageUrl(path, bucket) {
   if (!path) return undefined;
-
-  if (/^https?:\/\//.test(path)) {
-    return path;
-  }
+  if (/^https?:\/\//i.test(path)) return path;
 
   const projectUrl =
     import.meta.env.VITE_SUPABASE_URL?.replace(/\/+$/, "");
 
   if (!projectUrl) return undefined;
 
-  return `${projectUrl}/storage/v1/object/public/${bucket}/${path.replace(/^\/+/, "")}`;
+  const cleanPath = path.replace(/^\/+/, "");
+
+  return `${projectUrl}/storage/v1/object/public/${bucket}/${cleanPath}`;
 }
 
 export default function Badge({
@@ -21,6 +20,7 @@ export default function Badge({
   item,
   selected = false,
   onClick,
+  onRemove,
 }) {
   let label;
   let image;
@@ -52,23 +52,17 @@ export default function Badge({
         ? "bg-poplar-pink shadow-[0_2px_6px_rgba(98,14,40,0.15)]"
         : "bg-white shadow-none"
     }
-    ${
-      onClick
-        ? "cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-dark-humor"
-        : ""
-    }
   `;
 
   const content = (
     <>
-      {/* Show the image when a path is available */}
       {image && (
         <img
           src={image}
           alt=""
           width={14}
           height={14}
-          className="block h-[14px] w-[14px] shrink-0 object-contain"
+          className="block size-[14px] shrink-0 object-contain"
         />
       )}
 
@@ -76,20 +70,63 @@ export default function Badge({
     </>
   );
 
-  /* Interactive badges use a button */
+  /* Applied filters have a separate remove button */
+  if (onRemove) {
+    return (
+      <span className="relative inline-flex">
+        <span className={className}>{content}</span>
+
+        <button
+          type="button"
+          onClick={onRemove}
+          aria-label={`Remove ${label} filter`}
+          className="
+            absolute -right-2 -top-2
+            flex size-7 cursor-pointer items-center justify-center
+            rounded-full border-0 bg-spicy-berry text-white
+            focus-visible:outline-2
+            focus-visible:outline-offset-2
+            focus-visible:outline-dark-humor
+          "
+        >
+          <svg
+            aria-hidden="true"
+            width="10"
+            height="10"
+            viewBox="0 0 10 10"
+            fill="none"
+          >
+            <path
+              d="M2 2L8 8M8 2L2 8"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+            />
+          </svg>
+        </button>
+      </span>
+    );
+  }
+
+  /* Filter options use selectable buttons */
   if (onClick) {
     return (
       <button
         type="button"
         aria-pressed={selected}
         onClick={onClick}
-        className={className}
+        className={`
+          ${className}
+          cursor-pointer
+          focus-visible:outline-2
+          focus-visible:outline-offset-2
+          focus-visible:outline-dark-humor
+        `}
       >
         {content}
       </button>
     );
   }
 
-  /* Informational badges use a span */
   return <span className={className}>{content}</span>;
 }

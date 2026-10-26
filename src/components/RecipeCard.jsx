@@ -1,5 +1,77 @@
-export default function RecipeCard() {
-    return(
-        <h1>Recipe card</h1>
-    )
+import { Link } from "react-router";
+import Card from "./ui/Card";
+import Heading from "./ui/Heading";
+import Button from "./ui/Button";
+import Tag from "./ui/Tag";
+import { getPublicUrl } from "../api/media";
+
+export default function RecipeCard({
+  recipe,          // { id, title, hero_image_path, prep_time_minutes,
+                   //   difficulty: {name}, category: {method_image_path, method?} }
+  variant = "tile",        // "hero" | "tile"
+  isSaved = false,
+  onToggleSave,
+}) {
+  const isHero = variant === "hero";
+  const detailUrl = `/recipes/${recipe.id}`;
+
+  return (
+    <Card
+      variant="default"
+      size={isHero ? "lg" : "sm"}
+      className={`group relative flex flex-col gap-[10px] ${
+        isHero ? "" : "transition-shadow hover:shadow-md"
+      }`}
+    >
+      {/* image — links in hero via the button only; tile links via the stretched link below */}
+      <img
+        src={getPublicUrl("recipe-images", recipe.hero_image_path)}
+        alt={recipe.title}
+        className="aspect-square w-full rounded-[--radius-card] object-cover"
+      />
+
+      {/* stretched link: invisible, but covers the whole card for tile */}
+      {!isHero && (
+        <Link
+          to={detailUrl}
+          className="absolute inset-0 rounded-[--radius-card] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-spicy-berry"
+          aria-label={recipe.title}
+        />
+      )}
+
+      <Heading variant={isHero ? 1 : 2}>{recipe.title}</Heading>
+
+      <div className="flex items-center gap-[10px]">
+        <Tag label={`${recipe.prep_time_minutes} min`} />
+        <Tag label={recipe.difficulty?.name ?? "—"} />
+        <Tag
+          icon={recipe.category?.method_image_path}
+          label={recipe.category?.method ?? recipe.category?.category}
+        />
+      </div>
+
+      {isHero && (
+        <Button
+          content="View recipe"
+          variant="primary"
+          onClick={() => navigate(detailUrl)}
+          className="mt-[5px] self-start"
+        />
+      )}
+
+      {/* save button — top-right, works in both variants */}
+      <Button
+        variant="ghost"
+        icon="saved"
+        pressed={isSaved}
+        ariaLabel={isSaved ? `Remove ${recipe.title} from saved` : `Save ${recipe.title}`}
+        onClick={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          onToggleSave?.(recipe.id);
+        }}
+        className="!min-h-0 !p-[8px] absolute right-[16px] top-[16px] self-end text-rhodophobia hover:text-spicy-berry"
+      />
+    </Card>
+  );
 }
