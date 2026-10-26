@@ -1,4 +1,4 @@
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import Card from "./ui/Card";
 import Heading from "./ui/Heading";
 import Button from "./ui/Button";
@@ -13,6 +13,8 @@ export default function RecipeCard({
   onToggleSave,
 }) {
   const isHero = variant === "hero";
+  const navigate = useNavigate();
+  const method = recipe.method ?? recipe.category?.method;
   const detailUrl = `/recipes/${recipe.id}`;
 
   return (
@@ -43,10 +45,10 @@ export default function RecipeCard({
 
       <div className="flex items-center gap-[10px]">
         <Tag label={`${recipe.prep_time_minutes} min`} />
-        <Tag label={recipe.difficulty?.name ?? "—"} />
+        <Tag label={recipe.difficulty?.difficulty ?? recipe.difficulty?.name ?? "—"} />
         <Tag
           icon={recipe.category?.method_image_path}
-          label={recipe.category?.method ?? recipe.category?.category}
+          label={typeof method === "string" ? method : method?.method ?? recipe.category?.category}
         />
       </div>
 

@@ -6,6 +6,7 @@ const variants = {
 
 export default function Heading({
   content,
+  children,
   level = 1,
   variant = 1,
   className = "",
@@ -14,7 +15,7 @@ export default function Heading({
 
   return (
     <Tag className={`font-the-one ${variants[variant]} ${className}`}>
-      {content}
+      {content ?? children}
     </Tag>
   );
 }
