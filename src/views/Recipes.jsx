@@ -9,6 +9,7 @@ import Card from "../components/ui/Card";
 import SearchBar from "../components/SearchBar";
 import FilterCard from "../components/FilterCard";
 import { ONBOARDING_TIMES } from "../constants/onboarding";
+import filterbtn from "../assets/btn-filter.svg";
 
 
 import { getRecipes } from "../api/recipes";
@@ -30,8 +31,9 @@ export default function Recipes() {
   const [error, setError] = useState("");
   const [retry, setRetry] = useState(0);
   const [query, setQuery] = useState("");
+  const [filterOpen, setFilterOpen] = useState(false);
 
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const fruitIdsParam = searchParams.get("fruitIds") ?? "";
   const categoryIdsParam = searchParams.get("categoryIds") ?? "";
   const timeKey = searchParams.get("time") ?? "";
@@ -40,6 +42,8 @@ export default function Recipes() {
   const prepTimeRange = timeKey 
     ? ONBOARDING_TIMES.find((time) => time.id === timeKey) ?? null
     : null;
+  const difficultyIdsParam = searchParams.get("difficultyIds") ?? "";
+  const difficultyIds = difficultyIdsParam.split(",").filter(Boolean);
 
   const activeSort = SORTS[sort] ?? SORTS.recommended;
 
@@ -55,6 +59,7 @@ export default function Recipes() {
             ascending: activeSort.ascending,
             fruitIds,
             categoryIds,
+            difficultyIds,
             prepTimeRange: prepTimeRange,
           });
           if (!cancelled) setLoadedRecipes(data ?? []);
@@ -67,8 +72,14 @@ export default function Recipes() {
 
       loadRecipes();
       return () => { cancelled = true; };
-  }, [fruitIdsParam, categoryIdsParam, timeKey, activeSort.column, activeSort.ascending, retry]);
+  }, [fruitIdsParam, categoryIdsParam, difficultyIdsParam, timeKey, activeSort.column, activeSort.ascending, retry]);
 
+    const initialFilters = {
+      fruitIds,
+      categoryIds,
+      difficultyIds,
+      preparationTime: timeKey || "all",
+    };
   /* filtering for search bar queries on title, fruit, category/method */
   const visibleRecipes = useMemo(() => {
     const term = query.trim().toLowerCase();
@@ -106,19 +117,70 @@ export default function Recipes() {
   const [hero, ...tiles] = query.trim() ? [] : visibleRecipes;
   const allTiles = query.trim() ? visibleRecipes : tiles;
 
-console.log("loadedRecipes:", loadedRecipes, "| sort:", sort, "| recipes[0]:", recipes?.[0]?.title);
+  function handleApply(filters) {
+    const next = new URLSearchParams();
+
+    if (filters.fruitIds?.length)    next.set("fruitIds", filters.fruitIds.join(","));
+    if (filters.categoryIds?.length) next.set("categoryIds", filters.categoryIds.join(","));
+    if (filters.difficultyIds?.length) next.set("difficultyIds", filters.difficultyIds.join(","));
+    if (filters.preparationTime && filters.preparationTime !== "all")
+      next.set("time", filters.preparationTime);
+
+    setSearchParams(next);        // ← the URL is the single source of truth
+    setFilterOpen(false);
+  }
+
   return (
     <Card className="min-h-screen p-4" variant="viewbg"
     >
-      <SearchBar 
-        value={query}
-        onChange={setQuery}
-        suggestions={suggestions}
-        onSelect={(item) => {
-          setQuery(item.label); //u tap a suggestion u get the suggestion
-        }}
-      />
-{/*       <FilterCard /> */}
+      <div className="flex gap-related p-4">
+        {/* SearchBar grows to fill what the button doesn't take */}
+        <div className="min-w-0 flex-1">
+          <SearchBar
+            value={query}
+            onChange={setQuery}
+            suggestions={suggestions}
+            onSelect={(item) => setQuery(item.label)}
+          />
+        </div>
+
+        <button
+          type="button"
+          onClick={() => setFilterOpen(true)}
+          aria-label="Open filters"
+          aria-expanded={filterOpen}
+          className="w-1/7 shrink-0 cursor-pointer rounded-button--icons bg-white
+                    focus-visible:outline-2 focus-visible:outline-offset-2
+                    focus-visible:outline-spicy-berry"
+        >
+          <img src={filterbtn} alt="" aria-hidden="true" className="mx-auto h-full w-auto" />
+        </button>
+      </div>
+      {filterOpen && (
+        <div
+          className="fixed inset-0 z-40 flex flex-col"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Filter recipes"
+          onKeyDown={(e) => e.key === "Escape" && setFilterOpen(false)}
+        >
+          {/* backdrop: click to dismiss, focusable for keyboard users */}
+          <button
+            type="button"
+            aria-label="Close filters"
+            onClick={() => setFilterOpen(false)}
+            className="min-h-0 flex-1 cursor-pointer bg-dark-humor/40"
+          />
+
+          {/* sheet: content-sized, anchored to the bottom, scrollable if tall */}
+          <div className="max-h-[85dvh] overflow-y-auto overscroll-contain">
+            <FilterCard
+              initialFilters={initialFilters}
+              onApply={handleApply}
+            />
+          </div>
+        </div>
+      )}
 
       <Heading
         level={1}
@@ -146,7 +208,7 @@ console.log("loadedRecipes:", loadedRecipes, "| sort:", sort, "| recipes[0]:", r
           </p>
           <Button content="Try again" onClick={() => setRetry((value) => value + 1)} />
         </div>
-      ) : query.trim() && recipes.length === 0 ? (
+      ) : query.trim() && visibleRecipes.length === 0 ? (
         <p className="text-body">No recipes match “{query}”. Try another word.</p>
       ) : recipes.length === 0 ? (
         <p className="text-body">No recipes available yet.</p>

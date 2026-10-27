@@ -1,24 +1,23 @@
 import { useEffect, useState } from "react";
-import { supabase } from "../api/client";
 import Badge from "./ui/Badge";
 import Button from "./ui/Button";
 import Card from "./ui/Card";
 import Eyebrow from "./ui/Eyebrow";
 import Heading from "./ui/Heading";
+import { getPublicUrl, BUCKETS } from "../api/media";
+import { getFruits, getCategories, getDifficulties } from "../api/reference";
+import { ONBOARDING_TIMES } from "../constants/onboarding";
 
-const TIMES = [
-  { id: "under30", label: "Under 30 minutes", min: null, max: 30, maxExclusive: true },
-  { id: "30to60", label: "30–60 minutes", min: 30, max: 60, maxExclusive: true },
-  { id: "60to120", label: "1–2 hours", min: 60, max: 120, maxExclusive: false },
-  { id: "all", label: "No time limit" },
-];
-const emptyFilters = () => ({ fruitIds: [], categoryIds: [], difficultyIds: [], preparationTime: "all" });
+const TIMES = ONBOARDING_TIMES;   // one source of truth — no drifting copy
 
-// The view opens this card and handles onApply(filters).
-// Pass options when the view already has the reference data; otherwise load it here.
-// Category icons use the existing category-images bucket.
-// For relative difficulty icon paths, pass the existing Storage bucket name.
-export default function FilterCard({ initialFilters, options, onApply, imageBuckets = {}, className = "" }) {
+const emptyFilters = () => ({
+  fruitIds: [],
+  categoryIds: [],
+  difficultyIds: [],
+  preparationTime: "all",
+});
+
+export default function FilterCard({ initialFilters, options, onApply, className = "" }) {
   const [filters, setFilters] = useState(() => ({ ...emptyFilters(), ...initialFilters }));
   const [loadedOptions, setLoadedOptions] = useState(null);
   const [loadError, setLoadError] = useState("");
@@ -26,57 +25,94 @@ export default function FilterCard({ initialFilters, options, onApply, imageBuck
   const [pending, setPending] = useState(false);
   const data = options ?? loadedOptions;
 
+  /* reference data through the api layer — no direct supabase here */
   useEffect(() => {
     if (options) return;
     let cancelled = false;
+
     async function load() {
       try {
-        const results = await Promise.all([
-          supabase.from("fruits").select("id,name,image_path").order("name"),
-          supabase.from("category").select("id,category,category_image_path").order("category"),
-          supabase.from("difficulty").select("id,difficulty,difficulty_image_path,level").order("level"),
+        const [fruits, categories, difficulties] = await Promise.all([
+          getFruits(),
+          getCategories(),
+          getDifficulties(),
         ]);
-        const failed = results.find(result => result.error);
-        if (failed) throw failed.error;
-        if (!cancelled) setLoadedOptions({ fruits: results[0].data, categories: results[1].data, difficulties: results[2].data });
+        if (!cancelled) {
+          setLoadedOptions({
+            fruits: fruits ?? [],
+            categories: categories ?? [],
+            difficulties: difficulties ?? [],
+          });
+        }
       } catch {
         if (!cancelled) setLoadError("Could not load filters. Please reopen and try again.");
       }
     }
+
     load();
     return () => { cancelled = true; };
   }, [options]);
 
   const groups = [
     { key: "fruitIds", label: "Fruit", items: data?.fruits ?? [], name: "name" },
-    { key: "categoryIds", label: "Categories", items: data?.categories ?? [], name: "category", image: "category_image_path", bucket: imageBuckets.category ?? "category-images" },
-    { key: "difficultyIds", label: "Difficulty", items: data?.difficulties ?? [], name: "difficulty", image: "difficulty_image_path", bucket: imageBuckets.difficulty },
+    {
+      key: "categoryIds", label: "Categories", items: data?.categories ?? [],
+      name: "category", image: "category_image_path", bucket: BUCKETS.categoryImages,
+    },
+    {
+      key: "difficultyIds", label: "Difficulty", items: data?.difficulties ?? [],
+      name: "difficulty", image: "difficulty_image_path", bucket: BUCKETS.difficultyImages,
+    },
   ];
-  const time = TIMES.find(item => item.id === filters.preparationTime) ?? TIMES[3];
-  const active = groups.flatMap(group => group.items.filter(item => filters[group.key].includes(item.id)).map(item => ({ group, item })));
+
+  const time = TIMES.find((item) => item.id === filters.preparationTime) ?? TIMES.at(-1);
+  const active = groups.flatMap((group) =>
+    group.items
+      .filter((item) => filters[group.key].includes(item.id))
+      .map((item) => ({ group, item }))
+  );
 
   function toggle(key, id) {
-    setFilters(current => ({ ...current, [key]: current[key].includes(id) ? current[key].filter(value => value !== id) : [...current[key], id] }));
+    setFilters((current) => ({
+      ...current,
+      [key]: current[key].includes(id)
+        ? current[key].filter((value) => value !== id)
+        : [...current[key], id],
+    }));
   }
 
   function badge(group, item) {
-    const path = item[group.image];
-    const iconUrl = !path ? undefined : /^https?:\/\//.test(path) ? path
-      : group.bucket ? supabase.storage.from(group.bucket).getPublicUrl(path).data.publicUrl : undefined;
-    return <Badge key={`${group.key}-${item.id}`} type={group.key === "fruitIds" ? "fruit" : "category"}
-      item={group.key === "fruitIds" ? item : { category: item[group.name], category_image_path: iconUrl }}
-      selected={filters[group.key].includes(item.id)} onClick={() => toggle(group.key, item.id)} />;
+    const path = group.image ? item[group.image] : null;
+    const iconUrl = !path ? undefined : getPublicUrl(group.bucket, path);   // ← shared helper, no private regex
+
+    return (
+      <Badge
+        key={`${group.key}-${item.id}`}
+        type={group.key === "fruitIds" ? "fruit" : "category"}
+        item={group.key === "fruitIds" ? item : { category: item[group.name], category_image_path: iconUrl }}
+        selected={filters[group.key].includes(item.id)}
+        onClick={() => toggle(group.key, item.id)}
+      />
+    );
   }
 
+  /* FilterCard's REAL job: translate the draft to plain data and hand it up.
+     It does NOT know about URLs — that's the view's job. */
   async function apply(event) {
     event.preventDefault();
     if (pending || !data || typeof onApply !== "function") return;
+
     setPending(true);
     setApplyError("");
     try {
-      // OR within an ID list, AND between groups. Null means no time constraint.
-      await onApply({ ...filters, preparationTime: time.id,
-        prepTimeRange: time.id === "all" ? null : { min: time.min, max: time.max, maxExclusive: time.maxExclusive } });
+      await onApply({
+        ...filters,
+        preparationTime: time.id,
+        prepTimeRange:
+          time.id === "all"
+            ? null
+            : { min: time.min, max: time.max, maxExclusive: time.maxExclusive },
+      });
     } catch {
       setApplyError("Could not apply filters. Please try again.");
     } finally {
@@ -85,11 +121,14 @@ export default function FilterCard({ initialFilters, options, onApply, imageBuck
   }
 
   function groupField(group) {
-    return <fieldset className="m-0 min-w-0 border-0 p-0">
-      <legend className="mb-related text-small text-spicy-berry uppercase">{group.label}</legend>
-      <div className="flex flex-wrap gap-related">{group.items.map(item => badge(group, item))}</div>
-    </fieldset>;
+    return (
+      <fieldset className="m-0 min-w-0 border-0 p-0">
+        <legend className="mb-related text-small text-spicy-berry uppercase">{group.label}</legend>
+        <div className="flex flex-wrap gap-related">{group.items.map((item) => badge(group, item))}</div>
+      </fieldset>
+    );
   }
+
 
   return (
     <Card variant="fruit" className={`w-full rounded-t-[28px] rounded-b-none p-[24px] font-the-one text-dark-humor ${className}`}>
