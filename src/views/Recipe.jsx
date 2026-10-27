@@ -9,6 +9,7 @@ import Tag from "../components/ui/Tag";
 import Button from "../components/ui/Button";
 import IngredientCalculatorButton from "../components/ui/IngredientCalculatorButton";
 import StepGuide from "../components/StepGuide";
+import useSavedRecipes from "../hooks/useSavedRecipes";
 
 const formatAmount = amount => new Intl.NumberFormat("en-GB", { maximumSignificantDigits: 4 }).format(Number(amount));
 const ingredientAmount = row => row.unit?.trim().toLowerCase() === "to taste"
@@ -20,6 +21,11 @@ export default function Recipe() {
 }
 
 export function RecipeContent({ recipe }) {
+  const saved = useSavedRecipes();
+  const isSaved = saved.isSaved(recipe.id);
+  const isSaving = saved.isLoading || saved.pendingIds.has(recipe.id);
+  const saveError = saved.error;
+  const onToggleSave = () => saved.toggle(recipe);
   const [calculated, setCalculated] = useState(null);
   const [guideTop, setGuideTop] = useState(0);
   const [searchParams, setSearchParams] = useSearchParams();
@@ -85,7 +91,31 @@ export function RecipeContent({ recipe }) {
           </Card>
 
           <div className="flex flex-col gap-objects">
-            <Heading content={recipe.title} />
+            <div className="flex items-center justify-between gap-related">
+              <Heading content={recipe.title} className="min-w-0 flex-1" />
+              <Button
+                variant="primary"
+                icon="saved"
+                pressed={isSaved}
+                disabled={isSaving}
+                ariaLabel={
+                  isSaved
+                    ? `Remove ${recipe.title} from saved`
+                    : `Save ${recipe.title}`
+                }
+                onClick={(event) => {
+                  event.preventDefault();
+                  event.stopPropagation();
+                  onToggleSave(recipe.id);
+                }}
+                className="min-h-[40px]! min-w-[40px] shrink-0 p-[8px]!"
+              />
+            </div>
+            {saveError && (
+              <p role="alert" className="text-small text-spicy-berry">
+                {saveError}
+              </p>
+            )}
             <div className="flex flex-wrap items-center gap-x-[12px] gap-y-[8px]" aria-label="Recipe details">
               {[
                 recipe.prep_time_minutes != null && {
