@@ -1,17 +1,18 @@
 import { useEffect, useState } from "react";
-import { useLoaderData } from "react-router";
+import { useLoaderData, useSearchParams } from "react-router";
 import Heading from "../components/ui/Heading";
 import Button from "../components/ui/Button";
 import Sorting from "../components/Sorting";
 import RecipeCard from "../components/RecipeCard";
 import Spinner from "../components/ui/Spinner";
 import Card from "../components/ui/Card";
+import { ONBOARDING_TIMES } from "../constants/onboarding";
 
 
 import { getRecipes } from "../api/recipes";
 
 const SORTS = {
-  recommended: { column: "created_at",        ascending: false },
+  "recommended": { column: "created_at",        ascending: false },
   "prep-time": { column: "prep_time_minutes", ascending: true  },
   "a-z":       { column: "title",             ascending: true  },
 };
@@ -26,6 +27,14 @@ export default function Recipes() {
   const [error, setError] = useState("");
   const [retry, setRetry] = useState(0);
 
+  const [searchParams] = useSearchParams();
+  const fruitIds = searchParams.get("fruitIds")?.split(",").filter(Boolean) ?? [];
+  const categoryIds = searchParams.get("categoryIds")?.split(",").filter(Boolean) ?? [];
+  const timeKey = searchParams.get("time");
+  const prepTimeRange = timeKey 
+    ? ONBOARDING_TIMES.find((time) => time.id === timeKey) ?? null
+    : null;
+
   const activeSort = SORTS[sort] ?? SORTS.recommended;
 
   useEffect(() => {
@@ -38,13 +47,20 @@ export default function Recipes() {
           const data = await getRecipes({
             orderBy: activeSort.column,
             ascending: activeSort.ascending,
+            fruitIds,
+            categoryIds,
+            prepTimeRange: prepTimeRange,
           });
           if (!cancelled) setLoadedRecipes(data ?? []);
-        } catch {
+        } catch (err) {
+          console.log("searchParams is", );
+  console.error("Recipes fetch failed:", [searchParams]);
+  if (!cancelled) setError("Could not load recipes. Please try again.");
+} /* {
           if (!cancelled) setError("Could not load recipes. Please try again.");
         } finally {
           if (!cancelled) setLoading(false);
-        }
+        } */
       }
 
       loadRecipes();

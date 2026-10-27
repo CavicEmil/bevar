@@ -6,9 +6,9 @@ export const ONBOARDING_STEPS = [
 ];
 
 export const ONBOARDING_TIMES = [
-  { id: "under30", label: "Under 30 minutes", description: "Quick ways to save your fruit" },
-  { id: "30to60", label: "30–60 minutes", description: "A little kitchen project" },
-  { id: "60to120", label: "1–2 hours", description: "I have some more time" },
+  { id: "under30", label: "Under 30 minutes", description: "Quick ways to save your fruit", max: 30 },
+  { id: "30to60", label: "30–60 minutes", description: "A little kitchen project", min: 30, max:60 },
+  { id: "60to120", label: "1–2 hours", description: "I have some more time", min: 60, max: 120 },
   { id: "all", label: "No time limit", description: "Show me all the possibilities" },
 ];
 

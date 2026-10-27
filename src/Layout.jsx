@@ -9,8 +9,10 @@ import {
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import Container from "./components/ui/Container";
+import { useChrome } from "./context/ChromeContext";
 
 export default function Layout() {
+  const { chromeless } = useChrome();
   const recipeRoute = useMatch("/recipes/:id");
   const matches = useMatches();
   const navigate = useNavigate();
@@ -38,21 +40,23 @@ export default function Layout() {
   }
 
   return (
-    <div className="h-screen">
+    <div className="min-h-[100dvh] flex flex-col">
+      {!chromeless && 
       <Header
         variant={recipeRoute ? "title" : "logo"}
         title={recipe?.title ?? ""}
         isGuide={isGuide}
         onBack={handleBack}
       />
+      }
 
       <Container>
-        <main>
+        <main className="flex-1">
           <Outlet />
         </main>
       </Container>
 
-      <Footer />
+      {!chromeless && <Footer />}
     </div>
   );
 }

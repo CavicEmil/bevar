@@ -1,7 +1,9 @@
 import { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router";
 
 import { getCategories, getFruits } from "../api/reference";
-import { supabase } from "../api/client";
+import { getPublicUrl, BUCKETS } from "../api/media";
+
 
 import {
   ONBOARDING_STEPS,
@@ -16,9 +18,9 @@ import Heading from "./ui/Heading";
 
 export default function Onboarding({
   onComplete,
-  onSkip,
   initialPreferences,
 }) {
+  const navigate = useNavigate();
   const [index, setIndex] = useState(0);
 
   const [preferences, setPreferences] = useState(() => ({
@@ -72,21 +74,55 @@ export default function Onboarding({
     }));
   }
 
-  function fruitImage(path) {
-    if (!path) return undefined;
-    if (/^https?:\/\//i.test(path)) return path;
-
-    return supabase.storage
-      .from("fruit-images")
-      .getPublicUrl(path).data.publicUrl;
-  }
 
   function nextStep() {
-    if (isLastStep) {
-      onComplete(preferences);
-    } else {
+    if (!isLastStep) {
       setIndex((current) => current + 1);
+      return;
     }
+
+    onComplete(preferences);   // Landing persists the flag
+
+    const params = new URLSearchParams();
+
+    if (preferences.fruitIds.length)
+      params.set("fruitIds", preferences.fruitIds.join(","));
+    if (preferences.categoryIds.length)
+      params.set("categoryIds", preferences.categoryIds.join(","));
+    if (preferences.preparationTime)
+      params.set("time", preferences.preparationTime);
+
+    navigate(`/recipes${params.size ? `?${params}` : ""}`);
+  }
+
+    /* Skip = next step, but with this step's preference left empty. */
+  function skipStep() {
+    // clear whatever the current step collects, then advance
+    setPreferences((current) => ({
+      ...current,
+      [step.preferenceField]: step.id === "time" ? null : [],
+    }));
+
+    advance();
+  }
+
+  /* Shared advance logic — both buttons end here. */
+  function advance() {
+    if (!isLastStep) {
+      setIndex((current) => current + 1);
+      return;
+    }
+
+    onComplete(preferences);   // Landing persists the flag
+
+    // build URL params only from what was actually chosen —
+    // empty preferences naturally produce "/recipes" with no query string
+    const params = new URLSearchParams();
+    if (preferences.fruitIds.length)     params.set("fruitIds", preferences.fruitIds.join(","));
+    if (preferences.categoryIds.length)   params.set("categoryIds", preferences.categoryIds.join(","));
+    if (preferences.preparationTime)      params.set("time", preferences.preparationTime);
+
+    navigate(`/recipes${params.size ? `?${params}` : ""}`);
   }
 
   const allFruits =
@@ -146,7 +182,7 @@ export default function Onboarding({
                     variant="fruit"
                     item={fruit}
                     label={fruit.name}
-                    imageSrc={fruitImage(fruit.image_path)}
+                    imageSrc={getPublicUrl(BUCKETS.fruitImages, fruit.image_path)}
                     selected={preferences.fruitIds.includes(fruit.id)}
                     name="onboarding-fruits"
                     onChange={() => toggle("fruitIds", fruit.id)}
@@ -283,7 +319,7 @@ export default function Onboarding({
 
         <button
           type="button"
-          onClick={onSkip}
+          onClick={skipStep}
           className="
             min-h-[44px] cursor-pointer self-center
             bg-transparent px-2 text-body

@@ -95,7 +95,7 @@ export default function RecipeCard({
                 state: navigationState,
               })
             }
-            className="self-center w-90 m-card-sm"
+            className="self-center w-full m-card-sm"
           />
         )}
 
