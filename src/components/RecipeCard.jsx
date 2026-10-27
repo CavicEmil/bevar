@@ -20,7 +20,7 @@ export default function RecipeCard({
     <Card
       variant="default"
       size={isHero ? "lg" : "sm"}
-      className={`group relative flex flex-col gap-[10px] ${
+      className={`group relative flex flex-col gap-card-sm pt-4 px-4 ${
         isHero ? "" : "transition-shadow hover:shadow-md"
       }`}
     >
@@ -29,29 +29,39 @@ export default function RecipeCard({
         type="image"
         src={getPublicUrl("recipe-images", recipe.hero_image_path)}
         alt={recipe.title}
-        ratio="16/9"
+        ratio={isHero ? '16/9' : '3/2'}
         priority={isHero}
-        className="!rounded-card"
+        className="p-card-sm"
       />
 
       {/* stretched link: invisible, but covers the whole card for tile */}
       {!isHero && (
         <Link
           to={detailUrl}
-          className="absolute inset-0 rounded-[--radius-card] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-spicy-berry"
+          className="absolute inset-0 rounded-card gap-card-lg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-spicy-berry"
           aria-label={recipe.title}
         />
       )}
 
-      <Heading variant={isHero ? 1 : 2}>{recipe.title}</Heading>
+      <Heading variant={isHero ? 1 : 2} content={recipe.title} className="pl-card-sm text-dark-humor"/>
 
-      <div className="flex items-center gap-[10px]">
+      <div className="flex flex-wrap items-center gap-x-[10px] gap-y-[5px] m-card-sm">
+        {/* item 1: no separator */}
         <Tag label={`${recipe.prep_time_minutes} min`} />
-        <Tag label={recipe.difficulty?.name ?? "—"} />
-        <Tag
-          icon={recipe.category?.method_image_path}
-          label={recipe.category?.method ?? recipe.category?.category}
-        />
+
+        {/* items 2 & 3: separator lives INSIDE the item, so it wraps together with the tag */}
+        <span className="inline-flex items-center gap-[10px] text-rhodophobia">
+          <span aria-hidden="true">·</span>
+          <Tag label={recipe.difficulty?.difficulty ?? "—"} />
+        </span>
+
+        <span className="inline-flex items-center gap-[10px] text-rhodophobia">
+          {isHero && <span aria-hidden="true">·</span>}
+          <Tag
+            icon={getPublicUrl("category-images", recipe.category?.category_image_path)}
+            label={recipe.method?.method ?? recipe.category?.category}
+          />
+        </span>
       </div>
 
       {isHero && (
@@ -59,13 +69,13 @@ export default function RecipeCard({
           content="View recipe"
           variant="primary"
           onClick={() => navigate(detailUrl)}
-          className="mt-[5px] self-start"
+          className="self-center w-90 m-card-sm"
         />
       )}
 
       {/* save button — top-right, works in both variants */}
       <Button
-        variant="ghost"
+        variant="primary"
         icon="saved"
         pressed={isSaved}
         ariaLabel={isSaved ? `Remove ${recipe.title} from saved` : `Save ${recipe.title}`}

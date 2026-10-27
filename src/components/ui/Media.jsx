@@ -33,8 +33,8 @@ function MediaContent({
   return (
     <div
       className={`
-        relative w-full overflow-hidden rounded-[12px]
-        bg-rose-fantasy
+        relative w-full overflow-hidden 
+        
         ${className}
       `}
       style={{ aspectRatio: ratio }}

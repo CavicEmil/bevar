@@ -20,15 +20,16 @@ export default function Recipes() {
   const sort = SORTS[sortKey] ?? SORTS.recommended;
 
   const { data: recipes, loading, error } = useLoader(
-    () => getRecipes(sort.column, sort.ascending),
+    () => getRecipes({ orderBy: sort.column, ascending: sort.ascending }),
     [sortKey]
   );
+  console.log('recipedata is', { data: recipes, loading, error });
 
   const [hero, ...tiles] = recipes ?? [];
 
   return (
     <Container>
-    <Card variant="viewbg" className="h-screen">
+    <Card variant="viewbg" className="min-h-screen">
       <Heading variant={2}>Recipes</Heading>
 
       <Sorting value={sortKey} onChange={setSortKey} />
@@ -46,16 +47,18 @@ export default function Recipes() {
       )}
 
       {hero && (
-        <div className="grid gap-[20px] lg:grid-cols-5 lg\:grid-rows-[auto_1fr]">
+        <div className="grid p-4 gap-[20px] lg:grid-cols-5 lg\:grid-rows-[auto_1fr]">
           {/* hero: 2 of 5 columns = 40% on desktop, full width on mobile */}
           <div className="lg\:col-span-2">
             <RecipeCard recipe={hero} variant="hero" />
           </div>
 
           {/* tiles: remaining 3 of 5 columns */}
-          <div className="grid gap-[20px] sm\:grid-cols-2 lg\:col-span-3 lg\:grid-cols-3">
+          <div className="grid gap-[20px] grid-cols-2">
             {tiles.map((recipe) => (
+              <>
               <RecipeCard key={recipe.id} recipe={recipe} variant="tile" />
+              </>
             ))}
           </div>
         </div>
