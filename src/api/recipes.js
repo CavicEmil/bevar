@@ -33,7 +33,7 @@ export async function getRecipes({
         category, method, difficulty, search,
         fruitIds = [], categoryIds = [], difficultyIds = [],
         prepTimeRange = null,
-        orderBy = 'created_at', ascending = false
+        orderBy = 'created_at', ascending = false,
     } = {}) {
     let query = supabase.from('recipes').select(recipeSelect);
 
@@ -56,7 +56,15 @@ export async function getRecipes({
             : query.lte('prep_time_minutes', prepTimeRange.max);
     }
 
-    const recipes = unwrap(await query.order('title')) ?? [];
+    if (search?.trim()) {
+        const terms = search.trim().toLowerCase().split(/\s+/).filter(Boolean);
+        const matchers = terms
+            .map(term => `title.ilike.%${term}%,description.ilike.%${term}%,category.category.ilike.%${term}%`)
+            .join(',');
+            query = query.or(matchers);
+    }
+
+    const recipes = unwrap(await query.order(orderBy, { ascending })) ?? [];
     const terms = search?.trim().toLowerCase().split(/\s+/).filter(Boolean) ?? [];
 
     if (!terms.length) return recipes;
