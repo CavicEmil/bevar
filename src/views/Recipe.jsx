@@ -45,11 +45,45 @@ export function RecipeContent({ recipe }) {
 
           <div className="flex flex-col gap-objects">
             <Heading content={recipe.title} />
-            <div className="flex flex-wrap items-center gap-related" aria-label="Recipe details">
-              {recipe.prep_time_minutes != null && <Tag label={`${recipe.prep_time_minutes} min total`} />}
-              {recipe.difficulty && <Tag icon={icon(recipe.difficulty.difficulty_image_path)} label={recipe.difficulty.difficulty} />}
-              {recipe.category && <Tag icon={icon(recipe.category.category_image_path)} label={recipe.category.category} />}
-            </div>
+            <div
+  className="flex flex-wrap items-center gap-x-[12px] gap-y-[8px]"
+  aria-label="Recipe details"
+>
+  {[
+    recipe.prep_time_minutes != null && {
+      key: "time",
+      label: `${recipe.prep_time_minutes} min total`,
+    },
+    recipe.difficulty && {
+      key: "difficulty",
+      label: recipe.difficulty.difficulty,
+      icon: icon(recipe.difficulty.difficulty_image_path),
+    },
+    recipe.category && {
+      key: "category",
+      label: recipe.category.category,
+      icon: icon(recipe.category.category_image_path),
+    },
+  ]
+    .filter(Boolean)
+    .map((tag, index) => (
+      <span
+        key={tag.key}
+        className="inline-flex items-center gap-[12px]"
+      >
+        {index > 0 && (
+          <span
+            aria-hidden="true"
+            className="text-[14px] leading-none text-rhodophobia/50"
+          >
+            ·
+          </span>
+        )}
+
+        <Tag icon={tag.icon} label={tag.label} />
+      </span>
+    ))}
+</div>
           </div>
 
           {recipe.description && <p className="text-body whitespace-pre-line">{recipe.description}</p>}
