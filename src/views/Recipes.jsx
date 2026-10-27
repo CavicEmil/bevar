@@ -20,9 +20,8 @@ const SORTS = {
 
 export default function Recipes() {
   const saved = useSavedRecipes();
-  const loaderData = useLoaderData();
-  const routeRecipes = Array.isArray(loaderData) ? loaderData : null;
-
+/*   const loaderData = useLoaderData();
+  const routeRecipes = Array.isArray(loaderData) ? loaderData : null; */
   const [loadedRecipes, setLoadedRecipes] = useState([]);
   const [sort, setSort] = useState("recommended");
   const [loading, setLoading] = useState(true);
@@ -30,9 +29,11 @@ export default function Recipes() {
   const [retry, setRetry] = useState(0);
 
   const [searchParams] = useSearchParams();
-  const fruitIds = searchParams.get("fruitIds")?.split(",").filter(Boolean) ?? [];
-  const categoryIds = searchParams.get("categoryIds")?.split(",").filter(Boolean) ?? [];
-  const timeKey = searchParams.get("time");
+  const fruitIdsParam = searchParams.get("fruitIds") ?? "";
+  const categoryIdsParam = searchParams.get("categoryIds") ?? "";
+  const timeKey = searchParams.get("time") ?? "";
+  const fruitIds = fruitIdsParam.split(",").filter(Boolean);
+  const categoryIds = categoryIdsParam.split(",").filter(Boolean);
   const prepTimeRange = timeKey 
     ? ONBOARDING_TIMES.find((time) => time.id === timeKey) ?? null
     : null;
@@ -55,28 +56,24 @@ export default function Recipes() {
           });
           if (!cancelled) setLoadedRecipes(data ?? []);
         } catch (err) {
-          console.log("searchParams is", );
-  console.error("Recipes fetch failed:", [searchParams]);
-  if (!cancelled) setError("Could not load recipes. Please try again.");
-} /* {
           if (!cancelled) setError("Could not load recipes. Please try again.");
         } finally {
           if (!cancelled) setLoading(false);
-        } */
+        } 
       }
 
       loadRecipes();
       return () => { cancelled = true; };
-    }, [activeSort.column, activeSort.ascending, retry]);
+    }, [fruitIdsParam, categoryIdsParam, timeKey, activeSort.column, activeSort.ascending, retry]);
 
 
 
-  const recipes = routeRecipes ?? loadedRecipes;
-  const isLoading = routeRecipes === null && loading;
+  const recipes = loadedRecipes;
+  const isLoading = loading;
 
   const [hero, ...tiles] = recipes ?? [];
 
-console.log("loaderData:", loaderData, "| sort:", sort, "| recipes[0]:", recipes?.[0]?.title);
+console.log("loadedRecipes:", loadedRecipes, "| sort:", sort, "| recipes[0]:", recipes?.[0]?.title);
   return (
     <Card className="min-h-screen p-4" variant="viewbg"
     >

@@ -76,44 +76,29 @@ export default function Onboarding({
 
 
   function nextStep() {
-    if (!isLastStep) {
-      setIndex((current) => current + 1);
-      return;
-    }
-
-    onComplete(preferences);   // Landing persists the flag
-
-    const params = new URLSearchParams();
-
-    if (preferences.fruitIds.length)
-      params.set("fruitIds", preferences.fruitIds.join(","));
-    if (preferences.categoryIds.length)
-      params.set("categoryIds", preferences.categoryIds.join(","));
-    if (preferences.preparationTime)
-      params.set("time", preferences.preparationTime);
-
-    navigate(`/recipes${params.size ? `?${params}` : ""}`);
+    advance(preferences);
   }
 
     /* Skip = next step, but with this step's preference left empty. */
   function skipStep() {
     // clear whatever the current step collects, then advance
-    setPreferences((current) => ({
-      ...current,
-      [step.preferenceField]: step.id === "time" ? null : [],
-    }));
+    const cleared = {
+      ...preferences,
+      [step.preferenceField]: emptyPreferences()[step.preferenceField],
+    };
+    setPreferences(cleared);
 
-    advance();
+    advance(cleared);
   }
 
   /* Shared advance logic — both buttons end here. */
-  function advance() {
+  function advance(prefs) {
     if (!isLastStep) {
       setIndex((current) => current + 1);
       return;
     }
 
-    onComplete(preferences);   // Landing persists the flag
+    onComplete(prefs);   // Landing persists the flag
 
     // build URL params only from what was actually chosen —
     // empty preferences naturally produce "/recipes" with no query string

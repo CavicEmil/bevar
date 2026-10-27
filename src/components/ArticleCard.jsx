@@ -49,7 +49,7 @@ export default function ArticleCard({
       <div className="flex flex-wrap items-center gap-x-[10px] gap-y-[5px] m-card-sm">
         <Tag label={article.article_category} />
         <span className="inline-flex items-center gap-[10px] text-dark-humor">
-          <span aria-hidden="true">·</span>
+          {isHero && <span aria-hidden="true">·</span>}
           <Tag label={`${article.read_time} min read`} />
         </span>
       </div>
@@ -65,7 +65,7 @@ export default function ArticleCard({
       ) : (
         <Link
           to={detailUrl}
-          className="pl-card-sm w-fit text-spicy-berry pb-4"
+          className="pl-card-sm w-fit text-spicy-berry text-sm pb-4"
         >
           Read Article -&gt;
         </Link>

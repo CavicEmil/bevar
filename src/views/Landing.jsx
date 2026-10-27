@@ -1,7 +1,7 @@
 // views/Landing.jsx
 import { useEffect, useState } from "react";
 import { Link } from "react-router";
-/* import Searchbar from "../components/Searchbar"; */
+import SearchBar from "../components/SearchBar"; 
 import Heading from "../components/ui/Heading";
 import Spinner from "../components/ui/Spinner";
 import Card from "../components/ui/Card";
@@ -16,7 +16,7 @@ import logo from '../assets/logo-big.png';
 import { useChrome } from "../context/ChromeContext"; 
 
 const ONBOARDING_KEY = "bevar:seen-onboarding";
-const SPLASH_MIN_MS = 800;
+const SPLASH_MIN_MS = 1100;
 
 export default function Landing() {
   const { setChromeless } = useChrome();
@@ -69,7 +69,7 @@ export default function Landing() {
       :
 
       <div className="mx-auto w-full max-w-[480px] px-[20px] py-[20px] font-the-one text-dark-humor">
-        {/* <Searchbar /> */}
+        <SearchBar />
 
         {/* Popular recipes — heading left, tag-link right */}
         <div className="flex items-center justify-between">

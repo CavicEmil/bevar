@@ -1,8 +1,8 @@
 /* The order of this array defines the onboarding flow. */
 export const ONBOARDING_STEPS = [
-  { id: "fruit", title: "What fruit do you have?", description: "Choose one or more. We’ll find ways to make the most out of them." },
-  { id: "time", title: "How much time do you have?", description: "Choose how long you’d like to spend preparing your fruit." },
-  { id: "category", title: "What would you like to try?", description: "Pick one or more methods." },
+  { id: "fruit", preferenceField: "fruitIds", title: "What fruit do you have?", description: "Choose one or more. We’ll find ways to make the most out of them." },
+  { id: "time", preferenceField: "preparationTime", title: "How much time do you have?", description: "Choose how long you’d like to spend preparing your fruit." },
+  { id: "category", preferenceField: "categoryIds", title: "What would you like to try?", description: "Pick one or more methods." },
 ];
 
 export const ONBOARDING_TIMES = [

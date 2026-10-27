@@ -1,6 +1,6 @@
 import { createContext, useContext, useState } from "react";
 
-const ChromeContext = createContext({ chromeless: false, setChromeless: () => {} });
+const ChromeContext = createContext(null);
 
 export function ChromeProvider({ children }) {
   const [chromeless, setChromeless] = useState(false);
@@ -11,4 +11,13 @@ export function ChromeProvider({ children }) {
   );
 }
 
-export const useChrome = () => useContext(ChromeContext);
+
+export function useChrome() {
+  const context = useContext(ChromeContext);
+
+  if (!context) {
+    throw new Error("useChrome must be used inside <ChromeProvider>"); 
+  }
+
+  return context;
+}
