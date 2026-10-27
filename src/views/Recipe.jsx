@@ -1,5 +1,9 @@
 import { useState } from "react";
-import { useLoaderData } from "react-router";
+import {
+  useLoaderData,
+  useLocation,
+  useNavigate,
+} from "react-router";
 import { BUCKETS, getPublicUrl } from "../api/media";
 import Card from "../components/ui/Card";
 import Chip from "../components/ui/Chip";
@@ -20,6 +24,12 @@ export default function Recipe() {
 }
 
 export function RecipeContent({ recipe }) {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const returnTo =
+    location.state?.recipeReturnTo || "/recipes";
+
   const [calculated, setCalculated] = useState(null);
   const [isGuide, setIsGuide] = useState(false);
   const ingredients = calculated?.ingredients ?? recipe.recipe_ingredients ?? recipe.recipeingredients ?? [];
@@ -38,10 +48,83 @@ export function RecipeContent({ recipe }) {
         </>
       ) : (
         <>
-          <Card variant="fruit" className="rounded-card p-card-lg">
-            <Media src={imageUrl(BUCKETS.recipeImages, recipe.hero_image_path)} alt={recipe.title}
-              ratio="313 / 140" fit="contain" priority className="rounded-none" />
-          </Card>
+          <Button
+  content="Back to recipes"
+  icon="back"
+  variant="secondary"
+  className="self-start"
+  onClick={() =>
+    navigate(returnTo, {
+      viewTransition: true,
+    })
+  }
+/>
+
+<div
+  className="flex flex-col gap-section"
+  style={{
+    viewTransitionName:
+      location.pathname === `/recipes/${recipe.id}`
+        ? "recipe-card"
+        : "none",
+  }}
+>
+  <Card
+    variant="fruit"
+    className="rounded-card p-card-lg"
+  >
+    <Media
+      src={imageUrl(
+        BUCKETS.recipeImages,
+        recipe.hero_image_path
+      )}
+      alt={recipe.title}
+      ratio="313 / 140"
+      fit="contain"
+      priority
+      className="rounded-none"
+    />
+  </Card>
+
+  <div className="flex flex-col gap-objects">
+    <Heading content={recipe.title} />
+
+    <div
+      className="flex flex-wrap items-center gap-related"
+      aria-label="Recipe details"
+    >
+      {recipe.prep_time_minutes != null && (
+        <Tag
+          label={`${recipe.prep_time_minutes} min total`}
+        />
+      )}
+
+      {recipe.difficulty && (
+        <Tag
+          icon={icon(
+            recipe.difficulty.difficulty_image_path
+          )}
+          label={recipe.difficulty.difficulty}
+        />
+      )}
+
+      {recipe.category && (
+        <Tag
+          icon={icon(
+            recipe.category.category_image_path
+          )}
+          label={recipe.category.category}
+        />
+      )}
+    </div>
+  </div>
+
+  {recipe.description && (
+    <p className="text-body whitespace-pre-line">
+      {recipe.description}
+    </p>
+  )}
+</div>
 
           <div className="flex flex-col gap-objects">
             <Heading content={recipe.title} />
