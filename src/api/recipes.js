@@ -15,9 +15,17 @@ const recipeSelect = `
 /* Additional information for the single recipe page */
 const recipeDetailSelect = `
     ${recipeSelect},
-    recipeingredients (amount, unit, ingredients (id, name)),
-    recipe_equipment (equipment (id, name), equipment_amount),
-    step_by_step_guide (id, step_number, instruction, media_path, media_type)
+    recipe_ingredients (
+        ingredient_id,
+        amount,
+        unit,
+        ingredients (id, name)
+    ),
+    recipe_equipment (
+        equipment_id,
+        equipment (id, name)
+    ),
+    step_by_step_guide (*)
 `;
 
 /* Apply filters and search across the related recipe properties */

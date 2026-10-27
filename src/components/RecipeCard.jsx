@@ -1,4 +1,4 @@
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import Card from "./ui/Card";
 import Heading from "./ui/Heading";
 import Button from "./ui/Button";
@@ -7,12 +7,12 @@ import Media from "./ui/Media";
 import { getPublicUrl } from "../api/media";
 
 export default function RecipeCard({
-  recipe,          // { id, title, hero_image_path, prep_time_minutes,
-                   //   difficulty: {name}, category: {method_image_path, method?} }
-  variant = "tile",        // "hero" | "tile"
+  recipe,
+  variant = "tile",
   isSaved = false,
   onToggleSave,
 }) {
+  const navigate = useNavigate();
   const isHero = variant === "hero";
   const detailUrl = `/recipes/${recipe.id}`;
 
@@ -24,7 +24,6 @@ export default function RecipeCard({
         isHero ? "" : "transition-shadow hover:shadow-md"
       }`}
     >
-      {/* image — links in hero via the button only; tile links via the stretched link below */}
       <Media
         type="image"
         src={getPublicUrl("recipe-images", recipe.hero_image_path)}
@@ -34,7 +33,6 @@ export default function RecipeCard({
         className="p-card-sm"
       />
 
-      {/* stretched link: invisible, but covers the whole card for tile */}
       {!isHero && (
         <Link
           to={detailUrl}
@@ -73,15 +71,18 @@ export default function RecipeCard({
         />
       )}
 
-      {/* save button — top-right, works in both variants */}
       <Button
         variant="primary"
         icon="saved"
         pressed={isSaved}
-        ariaLabel={isSaved ? `Remove ${recipe.title} from saved` : `Save ${recipe.title}`}
-        onClick={(e) => {
-          e.preventDefault();
-          e.stopPropagation();
+        ariaLabel={
+          isSaved
+            ? `Remove ${recipe.title} from saved`
+            : `Save ${recipe.title}`
+        }
+        onClick={(event) => {
+          event.preventDefault();
+          event.stopPropagation();
           onToggleSave?.(recipe.id);
         }}
         className="!min-h-0 !p-[8px] absolute right-[16px] top-[16px] self-end text-rhodophobia hover:text-spicy-berry"
