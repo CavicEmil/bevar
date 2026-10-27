@@ -12,7 +12,11 @@ export default function Header({
     <header className="w-full text-white">
       <div className="flex min-h-20 items-center gap-related px-page py-4 sm:py-5">
         {variant === "logo" ? (
-          <Link to="/" aria-label="Go to home" className="inline-flex">
+          <Link
+            to="/"
+            aria-label="Go to home"
+            className="inline-flex"
+          >
             <img
               src={logo}
               alt="BEVAR"
@@ -21,18 +25,18 @@ export default function Header({
           </Link>
         ) : (
           <>
-            {/* The page defines the back or exit destination */}
             <Button
               variant="ghost"
               icon={isGuide ? "exit" : "back"}
               content={isGuide ? "Exit" : undefined}
               ariaLabel={isGuide ? "Exit guide" : "Go back"}
               onClick={onBack}
-              className="shrink-0"
+              className={`shrink-0 text-heading-3! ${
+                isGuide ? "[&_svg]:rotate-180" : ""
+              }`}
             />
 
-            {/* Display the loaded content title without icons */}
-            <span className="min-w-0 flex-1 break-words text-heading-3">
+            <span className="min-w-0 flex-1 break-words text-right text-heading-3">
               {title}
             </span>
           </>
