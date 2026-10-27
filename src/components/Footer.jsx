@@ -26,7 +26,7 @@ const menuItems = [
   },
   {
     label: "Profile",
-    to: "/login",
+    to: "/profile",
     icon: profileIcon,
     size: 24,
   },

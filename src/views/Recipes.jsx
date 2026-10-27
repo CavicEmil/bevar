@@ -9,6 +9,7 @@ import Card from "../components/ui/Card";
 
 
 import { getRecipes } from "../api/recipes";
+import useSavedRecipes from "../hooks/useSavedRecipes";
 
 const SORTS = {
   recommended: { column: "created_at",        ascending: false },
@@ -17,6 +18,7 @@ const SORTS = {
 };
 
 export default function Recipes() {
+  const saved = useSavedRecipes();
   const loaderData = useLoaderData();
   const routeRecipes = Array.isArray(loaderData) ? loaderData : null;
 
@@ -75,6 +77,12 @@ console.log("loaderData:", loaderData, "| sort:", sort, "| recipes[0]:", recipes
         <Sorting value={sort} onChange={setSort} />
       </div>
 
+      {saved.error && (
+        <div className="mb-section flex flex-col items-start gap-related">
+          <p role="alert" className="text-small">{saved.error}</p>
+          <Button content="Try again" variant="secondary" onClick={saved.refresh} />
+        </div>
+      )}
       {isLoading ? (
         <Spinner />
       ) : error ? (
@@ -90,11 +98,22 @@ console.log("loaderData:", loaderData, "| sort:", sort, "| recipes[0]:", recipes
         <div className="grid grid-cols-2 gap-[16px]">
           {/* hero spans the full width — both columns of the mobile shell */}
           <div className="col-span-2">
-            <RecipeCard recipe={hero} variant="hero" />
+            <RecipeCard
+              recipe={hero}
+              variant="hero"
+              isSaved={saved.isSaved(hero.id)}
+              onToggleSave={() => saved.toggle(hero)}
+            />
           </div>
 
           {tiles.map((recipe) => (
-            <RecipeCard key={recipe.id} recipe={recipe} variant="tile" />
+            <RecipeCard
+              key={recipe.id}
+              recipe={recipe}
+              variant="tile"
+              isSaved={saved.isSaved(recipe.id)}
+              onToggleSave={() => saved.toggle(recipe)}
+            />
           ))}
         </div>
       )}

@@ -1,7 +1,8 @@
-import { useState } from "react";
-import { Link, useNavigate } from "react-router";
+import { useEffect, useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router";
 import { signIn } from "../api/auth";
 import Input from "./ui/Input";
+import { useAuth } from "../context/AuthContext";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -10,20 +11,37 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
+  const location = useLocation();
+  const { isAuthenticated, loading: authLoading } = useAuth();
+  const from = location.state?.from;
+  const destination = typeof from === "string" && from.startsWith("/") && !from.startsWith("//") && from !== "/login" && from !== "/signup"
+    ? from
+    : "/profile";
+
+  useEffect(() => {
+    if (!authLoading && isAuthenticated) {
+      navigate(destination, { replace: true });
+    }
+  }, [authLoading, isAuthenticated, destination, navigate]);
 
   async function handleSubmit(e) {
     e.preventDefault();
+    if (loading || authLoading) return;
     setError(null);
     setLoading(true);
 
     try {
-      await signIn(email, password);
-      navigate("/recipes");
+      const data = await signIn(email.trim(), password);
+      if (!data.session) throw new Error("Could not start your session. Please try again.");
     } catch (err) {
       setError(err.message || "Unable to log in. Please try again.");
     } finally {
       setLoading(false);
     }
+  }
+
+  if (authLoading || isAuthenticated) {
+    return <p role="status" className="p-page text-body text-white">{authLoading ? "Checking your session…" : "Opening your profile…"}</p>;
   }
 
   return (
