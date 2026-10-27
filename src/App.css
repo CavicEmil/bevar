@@ -2,90 +2,147 @@
 @import "tailwindcss";
 
 @theme {
-    /* colors named using https://colordesigner.io/color-name-finder */
-    --color-rose-fantasy: #F1E8EA;
-    --color-poplar-pink: #FFD5E2;
-    --color-spicy-berry: #CC2E5F;
-    --color-dark-humor: #620E28;
-    --color-rhodophobia: #390918;
-    --color-white: #FFFFFF;
+  /* Colours */
+  --color-rose-fantasy: #F1E8EA;
+  --color-poplar-pink: #FFD5E2;
+  --color-spicy-berry: #CC2E5F;
+  --color-dark-humor: #620E28;
+  --color-rhodophobia: #390918;
+  --color-white: #FFFFFF;
 
- --font-the-one: "helvetica-neue-lt-pro", sans-serif;
- 
-    /* Heading 1: use for prominent titles, like guide or single receipe */
+  /* Font */
+  --font-the-one: "helvetica-neue-lt-pro", sans-serif;
 
+  /* Heading 1: guide and single recipe titles */
+  --text-heading-1: 24px;
+  --text-heading-1--line-height: 1.4;
+  --text-heading-1--font-weight: 600;
 
-    --text-heading-1: 24px;
-    --text-heading-1--line-height: 1.4;
-    --text-heading-1--font-weight: 600;
+  /* Heading 2: main page headings */
+  --text-heading-2: 20px;
+  --text-heading-2--line-height: 1.4;
+  --text-heading-2--font-weight: 600;
 
-    /* Heading 2: use in headings mainpages */
-    --text-heading-2: 20px;
-    --text-heading-2--line-height: 1.4;
-    --text-heading-2--font-weight: 600;
+  /* Heading 3: subheadings */
+  --text-heading-3: 16px;
+  --text-heading-3--line-height: 1.4;
+  --text-heading-3--font-weight: 600;
 
-    /* Heading 3: subheadings in mainpages  */
-    --text-heading-3: 16px;
-    --text-heading-3--line-height: 1.4;
-    --text-heading-3--font-weight: 600;
+  /* Tags, small cards and small buttons */
+  --text-small: 12px;
+  --text-small--line-height: 1.4;
+  --text-small--font-weight: 600;
 
-    /* Tags, small cards, small buttons */
-    --text-small: 12px;
-    --text-small--line-height: 1.4;
-    --text-small--font-weight: 600;
+  /* Body text */
+  --text-body: 14px;
+  --text-body--line-height: 1.4;
+  --text-body--font-weight: 400;
 
-    /* Body text, Big cards text */
-    --text-body: 14px;
-    --text-body--line-height: 1.4;
-    --text-body--font-weight: 400;
+  /* Big buttons */
+  --text-button-big: 14px;
+  --text-button-big--line-height: 1.4;
+  --text-button-big--font-weight: 600;
 
-    /* Big buttons */
-    --text-button-big: 14px;
-    --text-button-big--line-height: 1.4;
-    --text-button-big--font-weight: 600;
+  /* Eyebrow text */
+  --text-eyebrow: 10px;
+  --text-eyebrow--line-height: 1.4;
+  --text-eyebrow--font-weight: 600;
 
-    /* Eyebrow text */
-    --text-eyebrow: 10px;
-    --text-eyebrow--line-height: 1.4;
-    --text-eyebrow--font-weight: 600;
+  /* Spacing */
+  --spacing-page: 20px;
+  --spacing-section: 20px;
+  --spacing-related: 10px;
+  --spacing-objects: 5px;
+  --spacing-button: 14px;
+  --spacing-card-lg: 16px;
+  --spacing-card-sm: 12px;
 
-
-
-    /* Spacing */
-    --spacing-page: 20px;        /* Padding around entire page content */
-    --spacing-section: 20px;     /* Gap between sections and containers */
-    --spacing-related: 10px;     /* Gap between closely related elements  */
-    --spacing-objects: 5px;      /* Gap within objects */
-    --spacing-button: 14px;      /* Padding inside button around text */
-    --spacing-card-lg: 16px;     /* Padding inside large cards */
-    --spacing-card-sm: 12px;     /* Padding inside small cards */
-
-    /* Corner radius */
-    --radius-button--icons: 14px;       /* Button corner radius */
-    --radius-card: 20px;         /* Corner radius for all cards */
-    
+  /* Corner radius */
+  --radius-button--icons: 14px;
+  --radius-card: 20px;
 }
 
 @layer base {
-    html {
-        font-family: var(--font-the-one);
-        background-color: var(--color-dark-humor);
-    }
+  html {
+    font-family: var(--font-the-one);
+    background-color: var(--color-dark-humor);
+  }
 
-    body {
-        margin: 0;
-        min-height: 100dvh;
-        background-color: var(--color-dark-humor);
-    }
+  body {
+    margin: 0;
+    min-height: 100dvh;
+    background-color: var(--color-dark-humor);
+  }
 
-    #root {
-        min-height: 100dvh;
-    }
+  #root {
+    min-height: 100dvh;
+  }
 
-    button,
-    input,
-    textarea,
-    select {
-        font-family: inherit;
-    }
+  button,
+  input,
+  textarea,
+  select {
+    font-family: inherit;
+  }
+}
+
+/* ========================================
+   Shared button touch animation
+   ======================================== */
+
+.bevar-button {
+  /* Remove the browser's tap highlight */
+  -webkit-tap-highlight-color: transparent;
+
+  touch-action: manipulation;
+
+  /* Soft return after releasing the button */
+  transition:
+    transform 280ms cubic-bezier(0.22, 1.4, 0.36, 1),
+    background-color 180ms ease;
+}
+
+/* Keep enabled buttons solid when tapped */
+.bevar-button:not(:disabled) {
+  opacity: 1 !important;
+  filter: none !important;
+  background-image: none !important;
+}
+
+/* Remove decorative overlays */
+.bevar-button::before,
+.bevar-button::after {
+  content: none !important;
+}
+
+/* All enabled variants shrink slightly on press */
+.bevar-button:not(:disabled):active {
+  transform: scale(0.965);
+  transition-duration: 70ms;
+}
+
+/* Primary: pink becomes darker pink */
+.bevar-button--primary:not(:disabled):active {
+  background-color: #A91E4B !important;
+}
+
+/* Secondary: white becomes soft pink */
+.bevar-button--secondary:not(:disabled):active {
+  background-color: #F3CEDA !important;
+}
+
+/* Ghost: keep the background transparent */
+.bevar-button--ghost:not(:disabled):active {
+  background-color: transparent !important;
+}
+
+/* Accessibility: remove movement when requested */
+@media (prefers-reduced-motion: reduce) {
+  .bevar-button {
+    transition: none;
+  }
+
+  .bevar-button:not(:disabled):active {
+    transform: none;
+  }
 }

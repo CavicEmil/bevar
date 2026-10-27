@@ -12,7 +12,7 @@ export const BUCKETS = {
 
 /* local placeholder so cards never render broken images - still need to add placeholder img tho*/
 const PLACEHOLDER = "/placeholders/recipe.jpg";
- 
+
 
 /* path → public URL. Sync — no await needed. */
 export function getPublicUrl(bucket, path) {
