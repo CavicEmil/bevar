@@ -1,5 +1,5 @@
 import { useState } from "react";
-import Heading from "../ui/Heading";
+import Heading from "./ui/Heading";
 
 export const SORT_OPTIONS = [
   { key: "recommended", label: "RECOMMENDED", hint: "newest to oldest" },
