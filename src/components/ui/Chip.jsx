@@ -55,6 +55,8 @@ function ClockIcon() {
 
 export default function Chip({
   variant = "fruit",
+  children,
+  defaultOpen = false,
   item,
   label,
   description,
@@ -75,6 +77,19 @@ export default function Chip({
   const isFruit = variant === "fruit";
   const isTime = variant === "time";
   const isCategory = variant === "category" || variant === "method";
+
+  // Recipe sections use native details for open/close state and keyboard access.
+  if (variant === "recipe") {
+    return (
+      <details open={defaultOpen || undefined} className={`group border-b border-rose-fantasy font-the-one text-dark-humor ${className}`}>
+        <summary className="flex min-h-[50px] cursor-pointer list-none items-center justify-between gap-related py-1 text-body font-medium focus-visible:outline-2 focus-visible:outline-spicy-berry [&::-webkit-details-marker]:hidden">
+          {label}
+          <span aria-hidden="true" className="mr-1 size-[7px] shrink-0 rotate-45 border-r border-b border-current transition-transform group-open:rotate-225" />
+        </summary>
+        <div className="pb-card-lg text-body">{children}</div>
+      </details>
+    );
+  }
 
   /* Read the category and its joined methods from the API result */
   const displayLabel = label ?? (isCategory ? item?.category : undefined);
