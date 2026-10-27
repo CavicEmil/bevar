@@ -11,7 +11,7 @@ export default function MartaPlayground() {
     <main>
       <Card variant="viewbg" className="h-screen">
       <Container>
-
+<Recipes />
 <ArticleCategory />
       </Container>
       </Card>
