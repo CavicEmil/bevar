@@ -1,69 +1,49 @@
-// views/Recipes.jsx
-import { useState } from "react";
+
 import Container from "../../components/ui/Container";
 import Card from "../../components/ui/Card";
 import Heading from "../../components/ui/Heading";
-import Sorting, { SORT_OPTIONS } from "../../components/Sorting";
-import RecipeCard from "../../components/RecipeCard";
-import { getRecipes } from "../../api/recipes";
+import ArticleCard from "../../components/ArticleCard";
+import { getArticles } from "../../api/article";
 import { useLoader } from "../../hooks/useLoader";
 
-/* recommended: newest first · prep-time: shortest first · a-z: alphabetical */
-const SORTS = {
-  recommended: { column: "created_at",        ascending: false },
-  "prep-time": { column: "prep_time_minutes", ascending: true  },
-  "a-z":       { column: "title",             ascending: true  },
-};
+export default function Articles() {
+  const { data: articles, loading, error } = useLoader(() => getArticles());
 
-export default function Recipes() {
-  const [sortKey, setSortKey] = useState("recommended");
-  const sort = SORTS[sortKey] ?? SORTS.recommended;
-
-  const { data: recipes, loading, error } = useLoader(
-    () => getRecipes({ orderBy: sort.column, ascending: sort.ascending }),
-    [sortKey]
-  );
-  console.log('recipedata is', { data: recipes, loading, error });
-
-  const [hero, ...tiles] = recipes ?? [];
+  const [hero, ...tiles] = articles ?? [];
 
   return (
-    <Container>
-    <Card variant="viewbg" className="min-h-screen">
-      <Heading variant={2}>Recipes</Heading>
+    <Container className="flex flex-col gap-[20px] py-[20px]">
+      <Card variant="viewbg">
+      <Heading variant={2} content="Articles" />
 
-      <Sorting value={sortKey} onChange={setSortKey} />
-
-      {loading && <p className="text-body text-rhodophobia">Loading recipes…</p>}
+      {loading && <p className="text-body text-rhodophobia">Loading articles…</p>}
 
       {error && (
         <p className="text-body text-spicy-berry">
-          Couldn't load recipes. Please try again.
+          Couldn't load articles. Please try again.
         </p>
       )}
 
-      {!loading && !error && recipes?.length === 0 && (
-        <p className="text-body text-rhodophobia">No recipes yet.</p>
+      {!loading && !error && articles?.length === 0 && (
+        <p className="text-body text-rhodophobia">No articles yet.</p>
       )}
 
       {hero && (
-        <div className="grid p-4 gap-[20px] lg:grid-cols-5 lg\:grid-rows-[auto_1fr]">
+        <div className="grid gap-[20px] lg:grid-cols-5">
           {/* hero: 2 of 5 columns = 40% on desktop, full width on mobile */}
-          <div className="lg\:col-span-2">
-            <RecipeCard recipe={hero} variant="hero" />
+          <div className="lg:col-span-2">
+            <ArticleCard article={hero} variant="hero" />
           </div>
 
-          {/* tiles: remaining 3 of 5 columns */}
+          {/* tiles: column of 2 in the remaining 60% */}
           <div className="grid gap-[20px] grid-cols-2">
-            {tiles.map((recipe) => (
-              <>
-              <RecipeCard key={recipe.id} recipe={recipe} variant="tile" />
-              </>
+            {tiles.map((article) => (
+              <ArticleCard key={article.id} article={article} variant="tile" />
             ))}
           </div>
         </div>
       )}
-    </Card>
+      </Card>
     </Container>
   );
 }

@@ -1,5 +1,5 @@
 import { supabase } from './client';
-import { unwrap } from './helpers';
+import { unwrap } from './helper';
 
 /* get all the articles from the db */
 export async function getArticles({ category } = {}) {

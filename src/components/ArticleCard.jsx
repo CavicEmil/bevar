@@ -1,75 +1,93 @@
-// components/articles/ArticleCard.jsx
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router";
 import Card from "./ui/Card";
 import Heading from "./ui/Heading";
 import Button from "./ui/Button";
 import Tag from "./ui/Tag";
-import { getPublicUrl, BUCKETS } from "../../api/media";
+import Media from "./ui/Media";
+import { getPublicUrl } from "../api/media";
 
 export default function ArticleCard({
-  article,        // { id, slug, title, excerpt, hero_image_path,
-                   //   article_category, read_time }
-  variant = "tile",        // "hero" | "tile"
+  article,
+  variant = "tile",
+  isSaved = false,
+  onToggleSave,
 }) {
+  const navigate = useNavigate();
   const isHero = variant === "hero";
-  const detailUrl = `/articles/${article.slug}`;   // slug, not id for SEO, readability, accessibilty
+  const detailUrl = `/articles/${article.slug}`;   // slug, as we decided
 
   return (
     <Card
       variant="default"
       size={isHero ? "lg" : "sm"}
-      className={`relative flex flex-col gap-[10px] ${
+      className={`group relative flex flex-col gap-card-sm pt-4 px-4 ${
         isHero ? "" : "transition-shadow hover:shadow-md"
       }`}
     >
-      <img
-        src={getPublicUrl(BUCKETS.recipeImages, article.hero_image_path)}
+      <Media
+        type="image"
+        src={getPublicUrl("article-images", article.hero_image_path)}
         alt={article.title}
-        className="aspect-square w-full rounded-[--radius-card] object-cover"
+        ratio={isHero ? "16/9" : "3/2"}
+        priority={isHero}
+        className="p-card-sm"
       />
 
-      {/* stretched link for tile — same pattern as RecipeCard */}
-      {!isHero && (
-        <Link
-          to={detailUrl}
-          className="absolute inset-0 rounded-[--radius-card] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-spicy-berry"
-          aria-label={article.title}
-        />
-      )}
+      <Heading
+        variant={isHero ? 1 : 2}
+        content={article.title}
+        className="pl-card-sm text-dark-humor"
+      />
 
-      <Heading variant={isHero ? 1 : 2}>{article.title}</Heading>
-
-      {/* hero-only: excerpt between heading and button */}
       {isHero && article.excerpt && (
-        <p className="text-body text-rhodophobia">{article.excerpt}</p>
+        <p className="pl-card-sm text-body text-dark-humor">
+          {article.excerpt}
+        </p>
       )}
 
-      <div className="flex items-center gap-[10px]">
+      {/* only one separator, and it never wraps alone — the same bundling trick */}
+      <div className="flex flex-wrap items-center gap-x-[10px] gap-y-[5px] m-card-sm">
         <Tag label={article.article_category} />
-        <Tag label={`${article.read_time} min read`} />
+        <span className="inline-flex items-center gap-[10px] text-dark-humor">
+          <span aria-hidden="true">·</span>
+          <Tag label={`${article.read_time} min read`} />
+        </span>
       </div>
 
-      {isHero && (
+      {/* hero: primary button; tile: Tag-styled link — same slot, different affordance */}
+      {isHero ? (
         <Button
-          content="Read article"
+          content="Read the article ->"
           variant="primary"
           onClick={() => navigate(detailUrl)}
-          className="mt-[5px] self-start"
+          className="self-center w-90 m-card-sm"
         />
+      ) : (
+        <Link
+          to={detailUrl}
+          className="pl-card-sm w-fit text-spicy-berry pb-4"
+        >
+          Read Article -&gt;
+        </Link>
       )}
-      {/* save button — top-right, works in both variants */}
-        <Button
-            variant="ghost"
-            icon="saved"
-            pressed={isSaved}
-            ariaLabel={isSaved ? `Remove ${recipe.title} from saved` : `Save ${recipe.title}`}
-            onClick={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            onToggleSave?.(recipe.id);
-            }}
-            className="!min-h-0 !p-[8px] absolute right-[16px] top-[16px] self-end text-rhodophobia hover:text-spicy-berry"
-        />
+
+      <Button
+        variant="primary"
+        icon="saved"
+        pressed={isSaved}
+        ariaLabel={
+          isSaved
+            ? `Remove ${article.title} from saved`
+            : `Save ${article.title}`
+        }
+        onClick={(event) => {
+          event.preventDefault();
+          event.stopPropagation();
+          onToggleSave?.(recipe.id);
+        }}
+        className="!min-h-0 !p-[8px] absolute right-[16px] top-[16px] self-end text-dark-humor hover:text-spicy-berry"
+      />
+
     </Card>
   );
 }
