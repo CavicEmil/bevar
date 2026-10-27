@@ -111,18 +111,6 @@ export function RecipeContent({ recipe }) {
         isGuide ? "bg-rose-fantasy" : "bg-white"
       }`}
     >
-      <Button
-        content={isGuide ? "Close guide" : "Back to recipes"}
-        icon={isGuide ? undefined : "back"}
-        variant="secondary"
-        className="self-start"
-        onClick={() =>
-          isGuide
-            ? setIsGuide(false)
-            : navigate(returnTo, { viewTransition: true })
-        }
-      />
-
       {isGuide ? (
         <StepGuide recipeId={recipe.id} />
       ) : (
