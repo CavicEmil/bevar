@@ -72,7 +72,7 @@ export default function Landing() {
         <SearchBar />
 
         {/* Popular recipes — heading left, tag-link right */}
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between py-4">
           <Heading variant={1} content="Popular recipes" />
           <Link to="/recipes" className="w-fit text-small text-spicy-berry hover:text-spicy-berry">
             All recipes →

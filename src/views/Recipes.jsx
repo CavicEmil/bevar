@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useLoaderData, useSearchParams } from "react-router";
 import Heading from "../components/ui/Heading";
 import Button from "../components/ui/Button";
@@ -6,6 +6,8 @@ import Sorting from "../components/Sorting";
 import RecipeCard from "../components/RecipeCard";
 import Spinner from "../components/ui/Spinner";
 import Card from "../components/ui/Card";
+import SearchBar from "../components/SearchBar";
+import FilterCard from "../components/FilterCard";
 import { ONBOARDING_TIMES } from "../constants/onboarding";
 
 
@@ -27,6 +29,7 @@ export default function Recipes() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [retry, setRetry] = useState(0);
+  const [query, setQuery] = useState("");
 
   const [searchParams] = useSearchParams();
   const fruitIdsParam = searchParams.get("fruitIds") ?? "";
@@ -64,26 +67,64 @@ export default function Recipes() {
 
       loadRecipes();
       return () => { cancelled = true; };
-    }, [fruitIdsParam, categoryIdsParam, timeKey, activeSort.column, activeSort.ascending, retry]);
+  }, [fruitIdsParam, categoryIdsParam, timeKey, activeSort.column, activeSort.ascending, retry]);
 
+  /* filtering for search bar queries on title, fruit, category/method */
+  const visibleRecipes = useMemo(() => {
+    const term = query.trim().toLowerCase();
+    if (!term) return loadedRecipes;
+
+    return loadedRecipes.filter((recipe) =>
+      [
+        recipe.title,
+        recipe.fruits?.name,          
+        recipe.category?.category,
+        recipe.method?.method,
+      ]
+        .filter(Boolean)
+        .some((field) => field.toLowerCase().includes(term))
+    );
+  }, [loadedRecipes, query]);
+
+  /* suggestions: matching titles, typed for the SearchBar's contract */
+  const suggestions = useMemo(() => {
+    const term = query.trim().toLowerCase();
+    if (!term) return [];
+
+    return visibleRecipes.slice(0, 5).map((recipe) => ({
+      id: recipe.id,
+      type: "recipe",
+      label: recipe.title,
+    }));
+  }, [visibleRecipes, query]);
 
 
   const recipes = loadedRecipes;
   const isLoading = loading;
 
-  const [hero, ...tiles] = recipes ?? [];
+ /*  const [hero, ...tiles] = recipes ?? []; */
+  const [hero, ...tiles] = query.trim() ? [] : visibleRecipes;
+  const allTiles = query.trim() ? visibleRecipes : tiles;
 
 console.log("loadedRecipes:", loadedRecipes, "| sort:", sort, "| recipes[0]:", recipes?.[0]?.title);
   return (
     <Card className="min-h-screen p-4" variant="viewbg"
     >
-      {/* Add the search bar here later. */}
+      <SearchBar 
+        value={query}
+        onChange={setQuery}
+        suggestions={suggestions}
+        onSelect={(item) => {
+          setQuery(item.label); //u tap a suggestion u get the suggestion
+        }}
+      />
+{/*       <FilterCard /> */}
 
       <Heading
         level={1}
         variant={1}
         content="What will you preserve?"
-        className="text-dark-humor"
+        className="text-dark-humor pt-4"
       />
 
       <div className="relative p-4">
@@ -105,28 +146,22 @@ console.log("loadedRecipes:", loadedRecipes, "| sort:", sort, "| recipes[0]:", r
           </p>
           <Button content="Try again" onClick={() => setRetry((value) => value + 1)} />
         </div>
+      ) : query.trim() && recipes.length === 0 ? (
+        <p className="text-body">No recipes match “{query}”. Try another word.</p>
       ) : recipes.length === 0 ? (
         <p className="text-body">No recipes available yet.</p>
       ) : (
         <div className="grid grid-cols-2 gap-[16px]">
-          {/* hero spans the full width — both columns of the mobile shell */}
-          <div className="col-span-2">
-            <RecipeCard
-              recipe={hero}
-              variant="hero"
-              isSaved={saved.isSaved(hero.id)}
-              onToggleSave={() => saved.toggle(hero)}
-            />
-          </div>
+          {hero && (
+            <div className="col-span-2">
+              <RecipeCard recipe={hero} variant="hero"
+                isSaved={saved.isSaved(hero.id)} onToggleSave={() => saved.toggle(hero)} />
+            </div>
+          )}
 
-          {tiles.map((recipe) => (
-            <RecipeCard
-              key={recipe.id}
-              recipe={recipe}
-              variant="tile"
-              isSaved={saved.isSaved(recipe.id)}
-              onToggleSave={() => saved.toggle(recipe)}
-            />
+          {allTiles.map((recipe) => (
+            <RecipeCard key={recipe.id} recipe={recipe} variant="tile"
+              isSaved={saved.isSaved(recipe.id)} onToggleSave={() => saved.toggle(recipe)} />
           ))}
         </div>
       )}
