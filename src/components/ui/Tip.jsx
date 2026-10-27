@@ -5,6 +5,7 @@ import freezingIcon from "../../assets/tip-freezing.svg";
 import packingIcon from "../../assets/tip-packing.svg";
 import labelIcon from "../../assets/tip-label.svg";
 import leafIcon from "../../assets/tip-leaf.svg";
+import checkIcon from "../../assets/checkmark.svg";
 
 const variants = {
   1: { card: "default", label: "A LITTLE HELP" },
@@ -15,49 +16,81 @@ const variants = {
 const icons = {
   freezing: freezingIcon,
   packing: packingIcon,
+  container: packingIcon,
+  seal: packingIcon,
+  roll: packingIcon,
   label: labelIcon,
+  check: checkIcon,
 };
 
-export default function Tip({ variant = 1, children, items = [] }) {
-  const selected = variants[variant] || variants[1];
+export default function Tip({
+  variant = 1,
+  step,
+  children,
+  iconSources = {},
+}) {
+  const activeVariant = variants[variant] ? variant : 1;
+  const selected = variants[activeVariant];
+
+  const text = activeVariant === 3 ? children : step?.tip;
+
+  const items = Array.isArray(step?.storage_items)
+    ? step.storage_items.filter(
+        (item) => item && (item.title?.trim() || item.text?.trim())
+      )
+    : [];
+
+  if (activeVariant === 1 && !text?.trim()) return null;
+  if (activeVariant === 2 && items.length === 0) return null;
 
   return (
     <Card
       variant={selected.card}
       className={`w-full rounded-card px-card-lg font-the-one text-dark-humor ${
-        variant === 2 ? "py-[4px]" : "py-card-lg"
+        activeVariant === 2 ? "py-[4px]" : "py-card-lg"
       }`}
     >
-      {variant === 2 ? (
-        <ul className="m-0 list-none p-0 divide-y divide-rose-fantasy">
-          {items.map((item) => (
-            <li
-              key={item.id}
-              className="flex items-start gap-[12px] py-[18px]"
-            >
-              <img
-                src={icons[item.icon]}
-                alt=""
-                width={16}
-                height={16}
-                className="shrink-0"
-              />
+      {activeVariant === 2 ? (
+        <ul className="m-0 list-none divide-y divide-rose-fantasy p-0">
+          {items.map((item, index) => {
+            const iconKey = item.icon?.trim().toLowerCase();
+            const icon = iconSources[iconKey] ?? icons[iconKey];
 
-              <div className="min-w-0 flex-1">
-                <p className="text-body font-semibold">
-                  {item.title}
-                </p>
+            return (
+              <li
+                key={item.id ?? `${step?.id ?? "storage"}-${index}`}
+                className="flex items-start gap-[12px] py-[18px]"
+              >
+                {icon && (
+                  <img
+                    src={icon}
+                    alt=""
+                    width={16}
+                    height={16}
+                    className="mt-[2px] shrink-0"
+                  />
+                )}
 
-                <p className="mt-[6px] text-[13px] leading-[18px]">
-                  {item.text}
-                </p>
-              </div>
-            </li>
-          ))}
+                <div className="min-w-0 flex-1">
+                  {item.title && (
+                    <p className="m-0 text-body font-semibold">
+                      {item.title}
+                    </p>
+                  )}
+
+                  {item.text && (
+                    <p className="mt-[6px] mb-0 text-[13px] leading-[18px]">
+                      {item.text}
+                    </p>
+                  )}
+                </div>
+              </li>
+            );
+          })}
         </ul>
       ) : (
         <div className="flex flex-col gap-[8px]">
-          {variant === 3 ? (
+          {activeVariant === 3 ? (
             <div className="flex items-center gap-[8px]">
               <img
                 src={leafIcon}
@@ -67,7 +100,7 @@ export default function Tip({ variant = 1, children, items = [] }) {
                 className="shrink-0"
               />
 
-              <p className="text-[11px] leading-[16px] font-semibold">
+              <p className="m-0 text-[11px] leading-[16px] font-semibold">
                 {selected.label}
               </p>
             </div>
@@ -77,12 +110,12 @@ export default function Tip({ variant = 1, children, items = [] }) {
 
           <p
             className={
-              variant === 3
-                ? "text-[16px] leading-[24px] font-semibold"
-                : "text-body"
+              activeVariant === 3
+                ? "m-0 text-[16px] leading-[24px] font-semibold"
+                : "m-0 text-body"
             }
           >
-            {children}
+            {text}
           </p>
         </div>
       )}

@@ -3,6 +3,7 @@ import Card from "./ui/Card";
 import Heading from "./ui/Heading";
 import Button from "./ui/Button";
 import Tag from "./ui/Tag";
+import Media from "./ui/Media";
 import { getPublicUrl } from "../api/media";
 
 export default function RecipeCard({
@@ -26,10 +27,13 @@ export default function RecipeCard({
       }`}
     >
       {/* image — links in hero via the button only; tile links via the stretched link below */}
-      <img
+      <Media
+        type="image"
         src={getPublicUrl("recipe-images", recipe.hero_image_path)}
         alt={recipe.title}
-        className="aspect-square w-full rounded-[--radius-card] object-cover"
+        ratio="16/9"
+        priority={isHero}
+        className="!rounded-card"
       />
 
       {/* stretched link: invisible, but covers the whole card for tile */}

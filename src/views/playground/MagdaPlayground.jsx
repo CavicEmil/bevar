@@ -1,63 +1,61 @@
 import { useEffect, useState } from "react";
 import { supabase } from "../../api/client";
-import IngredientCalculator from "../../components/IngredientCalculator";
+import { RecipeContent } from "../Recipe";
 
 export default function MagdaPlayground() {
-  const [recipes, setRecipes] = useState([]);
-  const [selectedId, setSelectedId] = useState("");
-  const [status, setStatus] = useState("Loading recipes…");
+  const [recipe, setRecipe] = useState(null);
+  const [error, setError] = useState("");
 
   useEffect(() => {
-    async function loadRecipes() {
-      const { data, error } = await supabase
-        .from("recipes")
-        .select("id, title, fruit_id, fruits(name)")
-        .order("title");
+    let cancelled = false;
 
-      if (error) {
-        setStatus(error.message);
-        return;
+    async function loadRecipe() {
+      try {
+        const { data, error } = await supabase
+          .from("recipes")
+          .select(`
+            *,
+            fruits(*),
+            category(*),
+            difficulty(*),
+            recipe_ingredients(*, ingredients(*)),
+            recipe_equipment(*, equipment(*)),
+            step_by_step_guide(*)
+          `)
+          .eq("id", "e985ea7d-5f9c-4fb2-ac0e-99296251d701")
+          .single();
+
+        if (error) throw error;
+        if (!cancelled) setRecipe(data);
+      } catch (error) {
+        if (!cancelled) {
+          setError(error.message || "Could not load the recipe.");
+        }
       }
-
-      setRecipes(data);
-      setSelectedId(data[0]?.id ?? "");
-      setStatus(data.length ? "" : "Supabase nie zwrócił przepisów.");
     }
 
-    loadRecipes();
+    loadRecipe();
+
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
-  const recipe = recipes.find((item) => item.id === selectedId);
+  if (error) {
+    return (
+      <p role="alert" className="p-page text-white">
+        {error}
+      </p>
+    );
+  }
 
-  return (
-    <main className="min-h-screen bg-rose-fantasy p-page font-the-one">
-      <div className="mx-auto flex max-w-[345px] flex-col gap-section">
-        {status && <p role="status">{status}</p>}
+  if (!recipe) {
+    return (
+      <p role="status" className="p-page text-white">
+        Loading recipe…
+      </p>
+    );
+  }
 
-        {recipe && (
-          <>
-            <select
-              aria-label="Choose recipe"
-              value={selectedId}
-              onChange={(event) => setSelectedId(event.target.value)}
-              className="rounded-button--icons bg-white p-button text-dark-humor"
-            >
-              {recipes.map((item) => (
-                <option key={item.id} value={item.id}>
-                  {item.title}
-                </option>
-              ))}
-            </select>
-
-            <IngredientCalculator
-              recipe={recipe}
-              onApply={(result) =>
-                console.log("Przeliczone składniki:", result)
-              }
-            />
-          </>
-        )}
-      </div>
-    </main>
-  );
+  return <RecipeContent key={recipe.id} recipe={recipe} />;
 }
