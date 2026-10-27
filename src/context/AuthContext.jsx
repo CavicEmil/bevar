@@ -8,18 +8,35 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // 1. get initial session on load
-    supabase.auth.getSession().then(({ data }) => {
-      setSession(data.session);
-      setLoading(false);
-    });
+    let active = true;
+    let receivedAuthEvent = false;
 
-    // 2. react to login/logout/token refresh
+    // Subscribe before restoring so an older response cannot undo a login.
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (_event, newSession) => setSession(newSession)
+      (_event, newSession) => {
+        if (!active) return;
+        receivedAuthEvent = true;
+        setSession(newSession);
+        setLoading(false);
+      }
     );
 
-    return () => subscription.unsubscribe();
+    supabase.auth.getSession()
+      .then(({ data, error }) => {
+        if (!active || receivedAuthEvent) return;
+        setSession(error ? null : data.session);
+        setLoading(false);
+      })
+      .catch(() => {
+        if (!active || receivedAuthEvent) return;
+        setSession(null);
+        setLoading(false);
+      });
+
+    return () => {
+      active = false;
+      subscription.unsubscribe();
+    };
   }, []);
 
   const value = {

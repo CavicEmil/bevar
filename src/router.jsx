@@ -1,4 +1,4 @@
-import { createBrowserRouter, Navigate } from "react-router";
+import { createBrowserRouter, Navigate, useLocation } from "react-router";
 import { useAuth } from "./context/AuthContext";
 
 import Layout from "./Layout";
@@ -6,6 +6,8 @@ import Landing from "./views/Landing";
 import Recipes from "./views/Recipes";
 import Recipe from "./views/Recipe";
 import Blog from "./views/Blog";
+import MyProfile from "./views/MyProfile";
+import MyRecipes from "./views/MyRecipes";
 
 import Login from "./components/Login";
 import SignUp from "./components/SignUp";
@@ -20,11 +22,12 @@ import JosiePlayground from "./views/playground/JosiePlayground";
 
 function RequireAuth({ children }) {
   const { isAuthenticated, loading } = useAuth();
+  const location = useLocation();
 
   if (loading) return <p>Loading…</p>;
 
   if (!isAuthenticated) {
-    return <Navigate to="/login" replace />;
+    return <Navigate to="/login" replace state={{ from: location.pathname + location.search }} />;
   }
 
   return children;
@@ -74,6 +77,13 @@ export const router = createBrowserRouter([
             element: <Blog />,
             /* Add the article loader once its API import is ready */
           },
+        ],
+      },
+      {
+        path: "profile",
+        children: [
+          { index: true, element: <RequireAuth><MyProfile /></RequireAuth> },
+          { path: "recipes", element: <RequireAuth><MyRecipes /></RequireAuth> },
         ],
       },
       {
