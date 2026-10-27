@@ -30,10 +30,11 @@ const recipeDetailSelect = `
 
 /* Apply filters and search across the related recipe properties */
 export async function getRecipes({
-    category, method, difficulty, search,
-    fruitIds = [], categoryIds = [], difficultyIds = [],
-    prepTimeRange = null,
-} = {}) {
+        category, method, difficulty, search,
+        fruitIds = [], categoryIds = [], difficultyIds = [],
+        prepTimeRange = null,
+        orderBy = 'created_at', ascending = false
+    } = {}) {
     let query = supabase.from('recipes').select(recipeSelect);
 
     /* Apply selected filters in Supabase */
