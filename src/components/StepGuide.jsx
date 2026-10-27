@@ -161,7 +161,7 @@ function RecipeGuide({
           {heroUrl && (
             <img
               src={heroUrl}
-              alt={recipe.title}
+              alt={recipe?.title || ""}
               className="w-full object-contain"
             />
           )}
@@ -248,16 +248,26 @@ function RecipeGuide({
         )}
       </div>
 
-      <div className="flex justify-between gap-section">
-        <Button
-          content="Back"
-          variant="secondary"
-          disabled={index === 0}
-          onClick={() => setIndex(index - 1)}
-        />
+      <div
+        className={`grid w-full gap-[12px] ${
+          index > 0 ? "grid-cols-2" : "grid-cols-1"
+        }`}
+      >
+        {index > 0 && (
+          <Button
+            content="Back"
+            variant="secondary"
+            icon="back"
+            className="w-full min-w-0 [&_span]:whitespace-normal"
+            onClick={() => setIndex(index - 1)}
+          />
+        )}
 
         <Button
-          content={isLast ? "Finish guide ✓" : "Next"}
+          content={isLast ? "Finish guide ✓" : "Next step"}
+          icon={isLast ? undefined : "next"}
+          iconPosition="right"
+          className="w-full min-w-0 [&_span]:whitespace-normal"
           onClick={() => {
             if (isLast) {
               setComplete(true);
