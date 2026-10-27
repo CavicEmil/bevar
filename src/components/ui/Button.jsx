@@ -1,8 +1,8 @@
 /* Background and text colours */
 const variants = {
-  primary:      "bg-spicy-berry text-white",
-  secondary:    "bg-white text-rhodophobia",
-  ghost:        "bg-transparent text-white",
+  primary: "bg-spicy-berry text-white",
+  secondary: "bg-white text-rhodophobia",
+  ghost: "bg-transparent text-white",
 };
 
 /* SVG paths */
@@ -40,6 +40,7 @@ function ButtonIcon({ name, filled = false }) {
           strokeWidth="2"
           strokeLinejoin="round"
         />
+
         <path
           d="M8.5 3.5L1 11L8.5 18.5"
           stroke="currentColor"
@@ -55,7 +56,6 @@ function ButtonIcon({ name, filled = false }) {
 
   if (!path) return null;
 
-  /* Preserve the original SVG proportions */
   const dimensions = {
     filter: [22, 18],
     saved: [22, 22],
@@ -110,7 +110,6 @@ export default function Button({
     <ButtonIcon name={icon} filled={pressed} />
   ) : null;
 
-  /* Exit uses 20px semibold text */
   const textClasses =
     icon === "exit"
       ? "text-[20px] leading-[1.4] font-semibold"
@@ -124,6 +123,8 @@ export default function Button({
       aria-label={ariaLabel}
       aria-pressed={pressed}
       className={`
+        bevar-button
+        bevar-button--${variant}
         inline-flex min-h-[50px] items-center justify-center
         gap-[10px] p-button rounded-button--icons
         font-the-one whitespace-nowrap border-0
