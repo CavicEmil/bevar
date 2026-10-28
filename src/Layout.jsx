@@ -1,6 +1,7 @@
 import {
   Outlet,
   useMatch,
+  useLocation,
   useMatches,
   useNavigate,
   useSearchParams,
@@ -13,6 +14,8 @@ import { useChrome } from "./context/ChromeContext";
 
 export default function Layout() {
   const { chromeless } = useChrome();
+  const { pathname } = useLocation();
+  const isAuthPage = pathname === "/login" || pathname === "/signup";
 
   const recipeRoute = useMatch("/recipes/:id");
   const articleRoute = useMatch("/articles/:slug");
@@ -85,7 +88,7 @@ export default function Layout() {
         </main>
       </Container>
 
-      {!chromeless && <Footer />}
+      {!chromeless && !isAuthPage && <Footer />}
     </div>
   );
 }

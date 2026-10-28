@@ -49,13 +49,13 @@ export default function Login() {
       onSubmit={handleSubmit}
       aria-busy={loading}
       className="
-        mx-auto flex w-full max-w-[420px]
-        flex-col gap-section rounded-card bg-white px-page py-section
+        mx-auto flex min-h-[calc(100dvh-80px)] w-full max-w-lg
+        flex-col gap-section rounded-t-[28px] bg-rose-fantasy px-page pt-[28px] pb-[40px]
         font-the-one text-dark-humor
       "
     >
-      <div className="flex flex-col gap-related">
-        <h1 className="text-[28px] leading-[1.2] font-semibold">
+      <div className="mb-section flex flex-col gap-related">
+        <h1 className="text-heading-2">
           Welcome back
         </h1>
 
@@ -64,7 +64,7 @@ export default function Login() {
         </p>
       </div>
 
-      <div className="flex flex-col gap-[20px]">
+      <div className="flex flex-col gap-related">
         <Input
           variant="email"
           id="login-email"
@@ -107,7 +107,7 @@ export default function Login() {
         className="
           flex min-h-[48px] w-full
           items-center justify-center
-          rounded-button--icons bg-dark-humor p-button
+          rounded-button--icons bg-spicy-berry p-button
           text-body font-semibold text-white
           focus-visible:outline-2
           focus-visible:outline-offset-2
@@ -119,19 +119,24 @@ export default function Login() {
       </button>
 
       <div className="flex flex-col gap-related text-center">
-        <p className="text-small">No account yet?</p>
         <Link
           to="/signup"
           className="
             flex min-h-[48px] w-full items-center justify-center
-            rounded-button--icons bg-rose-fantasy p-button
+            rounded-button--icons bg-white p-button
             text-body font-semibold text-dark-humor
             focus-visible:outline-2
             focus-visible:outline-offset-2
             focus-visible:outline-spicy-berry
           "
         >
-          Sign up
+          No account yet? Sign up
+        </Link>
+        <Link
+          to="/"
+          className="flex min-h-[48px] w-full items-center justify-center rounded-button--icons p-button text-body font-semibold text-dark-humor focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-spicy-berry"
+        >
+          Keep exploring as a guest
         </Link>
       </div>
     </form>

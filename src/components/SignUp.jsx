@@ -56,8 +56,8 @@ export default function SignUp() {
       aria-label="Create an account"
       aria-busy={loading}
       className="
-        mx-auto flex w-full max-w-[420px]
-        flex-col gap-section rounded-card bg-white px-page py-section
+        mx-auto flex min-h-[calc(100dvh-80px)] w-full max-w-lg
+        flex-col gap-section rounded-t-[28px] bg-rose-fantasy px-page pt-[28px] pb-[40px]
         font-the-one text-dark-humor
       "
     >
@@ -78,7 +78,18 @@ export default function SignUp() {
         </div>
       ) : (
         <>
-          <div className="flex flex-col gap-[20px]">
+          <div className="mb-section flex flex-col gap-related">
+            <h1 className="text-heading-2">
+              Start your own recipe collection.
+            </h1>
+            <p className="text-body">
+              Save the good ones. Find your next favourite.
+              <br />
+              Create your free BEVAR account.
+            </p>
+          </div>
+
+          <div className="flex flex-col gap-related">
             <Input
               variant="name"
               id="signup-first-name"
@@ -125,8 +136,9 @@ export default function SignUp() {
             />
           </div>
 
-          <p className="text-small">
-            By creating an account, you agree to our{" "}
+          <p className="py-related text-body">
+            By creating an account, you agree to our
+            <br />
             <span className="text-spicy-berry">
               Terms of use and Privacy policy.
             </span>
@@ -145,7 +157,7 @@ export default function SignUp() {
             type="submit"
             disabled={loading}
             className="
-              flex min-h-[48px] w-full
+              mt-related -mb-related flex min-h-[48px] w-full
               items-center justify-center
               rounded-button--icons bg-spicy-berry p-button
               text-body font-semibold text-white
