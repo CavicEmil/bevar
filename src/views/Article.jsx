@@ -80,6 +80,7 @@ export default function Article() {
     <Card
       variant="default"
       className="
+        article-card-destination
         flex min-w-0 flex-col gap-section
         !rounded-b-none !p-page
         font-the-one text-dark-humor

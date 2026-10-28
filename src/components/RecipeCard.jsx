@@ -10,6 +10,7 @@ import Button from "./ui/Button";
 import Tag from "./ui/Tag";
 import Media from "./ui/Media";
 import { getPublicUrl } from "../api/media";
+import "./cardTransitions.css";
 
 export default function RecipeCard({
   recipe,
@@ -28,7 +29,7 @@ export default function RecipeCard({
 
   return (
     <div
-      className="h-full"
+      className="navigation-card h-full"
       style={{
         viewTransitionName: isTransitioning ? "recipe-card" : "none",
       }}
@@ -95,7 +96,7 @@ export default function RecipeCard({
                 state: navigationState,
               })
             }
-            className="self-center w-full m-card-sm"
+            className="navigation-card-trigger self-center w-full m-card-sm"
           />
         )}
 
