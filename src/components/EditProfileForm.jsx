@@ -54,17 +54,20 @@ export default function EditProfileForm({ initialProfile = {} }) {
       <p className="mt-[10px] mb-[24px] text-body">Your kitchen, your curiosities, your next good jar.</p>
       <Card variant="profileA" className="!p-[24px]">
         <form className="flex flex-col gap-[28px]" onSubmit={event => { event.preventDefault(); setSaved(true); }}>
-          <div className="flex flex-wrap items-center gap-[20px]">
+          <div className="grid grid-cols-[88px_minmax(0,1fr)] items-center gap-[20px]">
             <div className="marta-profile-avatar" aria-hidden="true">
               {profile.photo ? <img src={profile.photo} alt="" /> : (profile.name.trim()[0] || "M").toUpperCase()}
             </div>
-            <div className="flex flex-col gap-[8px]">
+            <div className="flex min-w-0 flex-col items-start gap-[12px]">
               <h3 id={`${id}-title`} className="text-heading-3">Nice to see you{profile.name.trim() ? `, ${profile.name.trim()}` : ""}.</h3>
               <label className="marta-profile-photo-link">
-                Change your photo
+                <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" className="shrink-0">
+                  <path d="m14.5 5.5 4 4M4 20l4.5-1 12-12a2.83 2.83 0 0 0-4-4l-12 12L4 20Z" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+                <span>Change your photo</span>
                 <input type="file" accept="image/*" className="sr-only" onChange={upload} />
               </label>
-              <p role="alert" className="text-small">{photoError}</p>
+              {photoError && <p role="alert" className="text-small">{photoError}</p>}
             </div>
           </div>
           <Input variant="name" label="What should we call you?" value={profile.name} maxLength={40} onChange={event => update("name", event.target.value)} />
