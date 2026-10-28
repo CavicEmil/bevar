@@ -82,11 +82,6 @@ export default function MyProfile() {
   if (editing) {
     return (
       <Card variant="fruit" className="mx-auto w-full max-w-lg px-[20px]! py-[24px]!">
-        <Button content="Back to profile" icon="back" variant="secondary" onClick={() => {
-          const next = new URLSearchParams(searchParams);
-          next.delete("edit");
-          setSearchParams(next);
-        }} />
         <EditProfileForm key={`${userId}-${fullName}-${avatar || ""}`} initialProfile={{ name: fullName || firstName, photo: avatar || "", bio: "" }} />
       </Card>
     );

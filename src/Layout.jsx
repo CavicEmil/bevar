@@ -36,8 +36,16 @@ export default function Layout() {
 
   const isArticleResults =
     Boolean(blogRoute) && searchParams.get("view") === "all";
+  const isEditingProfile = pathname === "/profile" && searchParams.get("edit") === "1";
 
   function handleBack() {
+    if (isEditingProfile) {
+      const next = new URLSearchParams(searchParams);
+      next.delete("edit");
+      setSearchParams(next);
+      window.scrollTo(0, 0);
+      return;
+    }
     if (articleRoute) {
       navigate("/blog");
       window.scrollTo(0, 0);
@@ -69,14 +77,14 @@ export default function Layout() {
       {!chromeless && (
         <Header
           variant={
-            recipeRoute || articleRoute || isArticleResults
+            recipeRoute || articleRoute || isArticleResults || isEditingProfile
               ? "title"
               : "logo"
           }
           title={recipe?.title ?? ""}
           isGuide={isGuide}
           backLabel={
-            articleRoute || isArticleResults ? "Learn" : undefined
+            isEditingProfile ? "Back to profile" : articleRoute || isArticleResults ? "Learn" : undefined
           }
           onBack={handleBack}
         />
