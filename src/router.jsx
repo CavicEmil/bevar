@@ -13,6 +13,7 @@ import Recipe from "./views/Recipe";
 import Blog from "./views/Blog";
 import Article from "./views/Article";
 import MyProfile from "./views/MyProfile";
+import MyArticles from "./views/MyArticles";
 import MyRecipes from "./views/MyRecipes";
 
 import Login from "./components/Login";
@@ -118,6 +119,7 @@ export const router = createBrowserRouter([
       {
         path: "profile",
         children: [
+          { path: "articles", element: <RequireAuth><MyArticles /></RequireAuth> },
           {
             index: true,
             element: (

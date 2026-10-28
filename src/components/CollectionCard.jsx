@@ -20,7 +20,7 @@ const variants = {
     noun: "article",
     description: "Good reads.\nWorth coming back to.",
     card: "fruit",
-    to: null,
+    to: "/profile/articles",
   },
 };
 

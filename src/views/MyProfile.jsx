@@ -4,6 +4,7 @@ import { useAuth } from "../context/AuthContext";
 import { supabase } from "../api/client";
 import { signOut } from "../api/auth";
 import { BUCKETS, getPublicUrl } from "../api/media";
+import useSavedArticles from "../hooks/useSavedArticles";
 import useSavedRecipes from "../hooks/useSavedRecipes";
 import CollectionCard from "../components/CollectionCard";
 import Card from "../components/ui/Card";
@@ -15,6 +16,7 @@ import feedbackIcon from "../assets/profile-feedback.svg";
 import chevronIcon from "../assets/profile-chevron.svg";
 
 export default function MyProfile() {
+  const savedArticles = useSavedArticles();
   const { user } = useAuth();
   const navigate = useNavigate();
   const saved = useSavedRecipes();
@@ -91,7 +93,8 @@ export default function MyProfile() {
 
       <div className="flex flex-col gap-[12px]">
         <CollectionCard variant="recipes" items={saved.recipes} loading={saved.isLoading} />
-        <CollectionCard variant="articles" items={[]} disabled />
+        <CollectionCard variant="articles" items={savedArticles.articles} loading={savedArticles.isLoading} />
+        {savedArticles.error && <p role="alert" className="text-small text-spicy-berry">{savedArticles.error}</p>}
       </div>
       {saved.error && (
         <div className="flex flex-col items-start gap-related">

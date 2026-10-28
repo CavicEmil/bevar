@@ -1,6 +1,3 @@
-import Card from "./ui/Card";
-import Heading from "./ui/Heading";
-
 const variants = {
   methods: {
     title: "Methods",
@@ -12,8 +9,7 @@ const variants = {
   storage: {
     title: "Storage",
     description: "Keep fruit fresh for longer",
-    iconPath:
-      "M3 3h18v4H3zM5 7v14h14V7M9 11h6",
+    iconPath: "M3 3h18v4H3zM5 7v14h14V7M9 11h6",
   },
 
   hygiene: {
@@ -33,92 +29,56 @@ const variants = {
   seasonal: {
     title: "Seasonal note",
     description: "Discover fruit in season",
-    iconPath:
-      "M20 3C10 3 4 7 4 13a7 7 0 0 0 1 4c10 2 15-4 15-14zM3 21L15 9",
+    iconPath: "M20 3C10 3 4 7 4 13a7 7 0 0 0 1 4c10 2 15-4 15-14zM3 21L15 9",
   },
 };
 
 export default function ArticleCategory({
   variant = "methods",
-  buttonLabel = "Learn More",
   onClick,
   className = "",
 }) {
   const category = variants[variant] ?? variants.methods;
 
   return (
-    <Card
-      variant="default"
-      size="sm"
+    <button
+      type="button"
+      onClick={onClick}
       className={`
-        flex w-full items-center gap-[12px]
-        !p-[12px]
-        font-the-one text-dark-humor
+        flex h-full min-h-[152px] w-full min-w-0
+        flex-col items-start gap-related
+        rounded-card border-0 bg-white p-card-lg
+        text-left font-the-one text-dark-humor
+        cursor-pointer
+        transition-shadow hover:shadow-md
+        focus-visible:outline-2
+        focus-visible:outline-offset-2
+        focus-visible:outline-spicy-berry
         ${className}
       `}
     >
-      {/* Category content */}
-      <div className="flex min-w-0 flex-1 flex-col gap-objects">
-        <div className="flex items-start gap-[8px]">
-          <svg
-            aria-hidden="true"
-            width="22"
-            height="22"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.8"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            className="mt-[3px] shrink-0"
-          >
-            <path d={category.iconPath} />
-          </svg>
-          <Heading
-            level={2}
-            variant={2}
-            content={category.title}
-            className="min-w-0 text-dark-humor"
-          />
-        </div>
+      <svg
+        aria-hidden="true"
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        className="shrink-0"
+      >
+        <path d={category.iconPath} />
+      </svg>
 
-        <p className="text-body text-dark-humor">
-          {category.description}
-        </p>
+      <span className="text-[14px] leading-[1.4] font-semibold">
+        {category.title}
+      </span>
 
-        {/* Pink text button */}
-        <button
-          type="button"
-          onClick={onClick}
-          className="
-            inline-flex min-h-[44px] items-center
-            justify-start gap-[10px] self-start
-            cursor-pointer border-0 bg-transparent p-0
-            font-the-one text-[16px] leading-[1.4]
-            font-normal text-spicy-berry
-            hover:underline hover:underline-offset-4
-            focus-visible:outline-2
-            focus-visible:outline-offset-2
-            focus-visible:outline-spicy-berry
-          "
-        >
-          <span>{buttonLabel}</span>
-
-          <svg
-            aria-hidden="true"
-            width="18"
-            height="18"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.8"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <path d="M4 12h16M14 6l6 6-6 6" />
-          </svg>
-        </button>
-      </div>
-    </Card>
+      <span className="text-body font-normal">
+        {category.description}
+      </span>
+    </button>
   );
 }

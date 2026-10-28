@@ -2,6 +2,8 @@ import { useEffect, useMemo } from "react";
 import { Link, useLoaderData } from "react-router";
 import DOMPurify from "dompurify";
 
+import Button from "../components/ui/Button";
+import useSavedArticles from "../hooks/useSavedArticles";
 import Card from "../components/ui/Card";
 import Media from "../components/ui/Media";
 import ArticleCard from "../components/ArticleCard";
@@ -47,6 +49,7 @@ function HtmlContent({ html }) {
 
 export default function Article() {
   const { article, articles, recipes } = useLoaderData();
+  const saved = useSavedArticles();
 
   const content = useMemo(
     () => prepareContent(article.content),
@@ -83,6 +86,7 @@ export default function Article() {
       "
     >
       <article className="flex min-w-0 flex-col gap-related">
+        <div className="relative min-h-[50px]">
         {article.hero_image_path && (
           <Media
             type="image"
@@ -94,6 +98,21 @@ export default function Article() {
             ratio="16/9"
             priority
           />
+        )}
+          <Button
+            icon="saved"
+            pressed={saved.isSaved(article.id)}
+            ariaLabel={saved.isSaved(article.id) ? "Remove article from my profile" : "Save article to my profile"}
+            disabled={saved.isLoading || saved.pendingIds.has(article.id)}
+            onClick={() => saved.toggle(article)}
+            className="absolute right-3 top-3 !min-h-0 !p-[8px]"
+          />
+        </div>
+        {saved.error && (
+          <div className="flex flex-col items-start gap-related">
+            <p role="alert" className="text-small text-spicy-berry">{saved.error}</p>
+            <Button content="Try again" variant="secondary" onClick={saved.refresh} />
+          </div>
         )}
 
         <p className="text-eyebrow uppercase text-spicy-berry">

@@ -1,4 +1,5 @@
 import { Link, useNavigate } from "react-router";
+import useSavedArticles from "../hooks/useSavedArticles";
 import Card from "./ui/Card";
 import Heading from "./ui/Heading";
 import Button from "./ui/Button";
@@ -9,10 +10,10 @@ import { getPublicUrl } from "../api/media";
 export default function ArticleCard({
   article,
   variant = "tile",
-  isSaved = false,
-  onToggleSave,
 }) {
   const navigate = useNavigate();
+  const saved = useSavedArticles();
+  const isSaved = saved.isSaved(article.id);
   const isHero = variant === "hero";
   const detailUrl = `/articles/${article.slug}`;
 
@@ -74,6 +75,7 @@ export default function ArticleCard({
       <Button
         variant="primary"
         icon="saved"
+        disabled={saved.isLoading || saved.pendingIds.has(article.id)}
         pressed={isSaved}
         ariaLabel={
           isSaved
@@ -83,11 +85,12 @@ export default function ArticleCard({
         onClick={(event) => {
           event.preventDefault();
           event.stopPropagation();
-          onToggleSave?.(article.id);
+          saved.toggle(article);
         }}
         className="!min-h-0 !p-[8px] absolute right-[16px] top-[16px] self-end text-dark-humor hover:text-spicy-berry"
       />
 
+      {saved.error && <p role="alert" className="text-small text-spicy-berry">{saved.error}</p>}
     </Card>
   );
 }

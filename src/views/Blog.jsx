@@ -176,15 +176,15 @@ export default function Blog() {
         </>
       ) : (
         <>
-          <h1 className="text-[24px] leading-[1.4] font-semibold">
-            Learn &amp; Preserve
-          </h1>
+
 
           <ArticleSearch
             value={searchValues}
             onChange={openResults}
           />
-
+ <h1 className="text-[24px] leading-[1.4] font-semibold">
+            Learn &amp; Preserve
+          </h1>
           {featured ? (
             <section aria-label="Featured article">
               <ArticleCard
@@ -208,15 +208,17 @@ export default function Blog() {
             >
               What would you like to know?
             </h2>
-
+            <div className="grid grid-cols-2 items-stretch gap-related">
             {TOPICS.map((topic) => (
-              <ArticleCategory
+                <ArticleCategory
                 key={topic.variant}
                 variant={topic.variant}
-                buttonLabel="View articles"
                 onClick={() => viewTopic(topic.name)}
-              />
+                />
             ))}
+            </div>
+
+
           </section>
 
           <section

@@ -11,7 +11,9 @@ export default function Header({
   onBack,
   backLabel,
 }) {
-  const collectionRoute = useMatch("/profile/recipes");
+  const recipeCollection = useMatch("/profile/recipes");
+  const articleCollection = useMatch("/profile/articles");
+  const collectionRoute = recipeCollection || articleCollection;
   const recipeRoute = useMatch("/recipes/:id");
 
   const navigate = useNavigate();
@@ -67,13 +69,13 @@ export default function Header({
         : "Recipes";
 
   function handleBack() {
-    if (onBack) {
-      onBack();
+    if (collectionRoute) {
+      navigate("/profile");
       return;
     }
 
-    if (collectionRoute) {
-      navigate("/profile");
+    if (onBack && (!recipeRoute || isGuide)) {
+      onBack();
       return;
     }
 
