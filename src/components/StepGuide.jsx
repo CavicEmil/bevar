@@ -9,6 +9,7 @@ import Card from "./ui/Card";
 import Eyebrow from "./ui/Eyebrow";
 import Spinner from "./ui/Spinner";
 import Media from "./ui/Media";
+import RecipeConfetti from "./ui/RecipeConfetti";
 import IngredientCalculatorButton from "./ui/IngredientCalculatorButton";
 
 const format = new Intl.NumberFormat("en-GB", { maximumSignificantDigits: 4 });
@@ -123,6 +124,7 @@ function RecipeGuide({ recipeId, sourceRecipe, calculated, onApply, mediaBucket,
     const heroUrl = imageUrl(guideRecipe?.hero_image_path, recipeImageBucket);
     return (
       <section className="flex min-h-0 w-full flex-1 flex-col gap-[12px] font-the-one text-dark-humor">
+        <RecipeConfetti />
         <div className="flex min-h-0 flex-1 flex-col gap-[12px] overflow-y-auto overscroll-contain">
         <ProgressBar steps={steps} isComplete />
         <Heading content="Little effort, a lot to enjoy." />

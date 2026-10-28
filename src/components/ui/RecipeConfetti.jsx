@@ -1,4 +1,4 @@
-/* import { useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import confetti from "canvas-confetti";
 
 export default function RecipeConfetti() {
@@ -63,12 +63,4 @@ export default function RecipeConfetti() {
       "
     />
   );
-} */
-
-  export default function CanvasConfetti() {
-    return(
-      <>
-      Im Confetti hihihi
-      </>
-    )
-  }
+}
