@@ -8,6 +8,9 @@ import Card from "../components/ui/Card";
 import RecipeCard from "../components/RecipeCard";
 import ArticleCard from "../components/ArticleCard";
 import Carousel from "../components/ui/Carousel";
+import "./Landing.css";
+import { getCategories } from "../api/reference";
+import { BUCKETS, getPublicUrl } from "../api/media";
 import Onboarding from "../components/Onboarding";
 import { useLoader } from "../hooks/useLoader";
 import { getRecipes } from "../api/recipes";
@@ -46,6 +49,8 @@ export default function Landing() {
 
   const { data: recipes, loading: recipesLoading, error: recipesError } = useLoader(() => getRecipes());
   const { data: articles, loading: articlesLoading, error: articlesError } = useLoader(() => getArticles());
+
+  const { data: categories, loading: categoriesLoading, error: categoriesError } = useLoader(() => getCategories());
 
   const dataReady = !recipesLoading && !articlesLoading;
 
@@ -172,6 +177,21 @@ export default function Landing() {
               ))}
             </Carousel>
           
+            <section aria-label="Browse preserving methods" className="py-[20px]">
+              <Heading level={2} variant={3} content="What would you like to try?" />
+              {categoriesLoading && <p role="status" className="mt-[12px] text-small">Loading methods…</p>}
+              {categoriesError && <p role="alert" className="mt-[12px] text-small">Methods couldn’t be loaded. Please refresh to try again.</p>}
+              <div className="mt-[12px] flex flex-nowrap gap-[10px] overflow-x-auto pb-[8px]" tabIndex={0} role="region" aria-label="Method categories, scroll horizontally">
+                {(categories ?? []).map(category => (
+                  <Link key={category.id} to={`/recipes?categoryIds=${encodeURIComponent(category.id)}`}
+                    className="inline-flex min-h-[44px] shrink-0 items-center gap-[8px] whitespace-nowrap rounded-[14px] bg-white px-[16px] py-[10px] text-small text-dark-humor transition-colors hover:bg-poplar-pink focus-visible:outline-2 focus-visible:outline-spicy-berry">
+                    {category.category_image_path && <img src={getPublicUrl(BUCKETS.categoryImages, category.category_image_path)} alt="" className="size-[22px] object-contain" />}
+                    {category.category}
+                  </Link>
+                ))}
+              </div>
+            </section>
+
             {/* Learn more — same header pattern, second section */}
             <div className="flex items-center justify-between pt-4">
               <Heading variant={1} content="Learn more" />
@@ -180,11 +200,11 @@ export default function Landing() {
               </Link>
             </div>
 
-            <div className="grid grid-cols-2 gap-[16px]">
+            <Carousel ariaLabel="Learn more articles" itemsPerSlide={2} className="home-articles mt-[16px]">
               {topArticles.map((article) => (
                 <ArticleCard key={article.id} article={article} variant="tile" />
               ))}
-            </div>
+            </Carousel>
           </>
           )}
         </div>

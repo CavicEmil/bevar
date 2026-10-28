@@ -1,0 +1,40 @@
+.home-articles .navigation-card {
+  height: 320px;
+}
+
+.home-articles .navigation-card > :first-child {
+  flex-shrink: 0;
+}
+
+.home-articles .navigation-card > :is(h1, h2, h3) {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
+  flex-shrink: 0;
+  height: 4.2em;
+  max-height: 4.2em;
+}
+
+.home-articles .navigation-card > h1 + div,
+.home-articles .navigation-card > h2 + div,
+.home-articles .navigation-card > h3 + div {
+  display: grid;
+  grid-template-rows: 17px 17px;
+  align-items: start;
+  gap: 3px;
+  flex-shrink: 0;
+}
+
+.home-articles .navigation-card > :is(h1, h2, h3) + div > :first-child {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+  overflow: hidden;
+  color: var(--color-spicy-berry, #cc2e5f);
+}
+
+.home-articles .navigation-card > a {
+  margin-top: 4px;
+  flex-shrink: 0;
+}
