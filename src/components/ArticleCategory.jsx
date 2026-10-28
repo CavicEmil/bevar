@@ -1,6 +1,5 @@
 import Card from "./ui/Card";
 import Heading from "./ui/Heading";
-import Media from "./ui/Media";
 
 const variants = {
   methods: {
@@ -41,8 +40,6 @@ const variants = {
 
 export default function ArticleCategory({
   variant = "methods",
-  imageSrc,
-  imageAlt = "",
   buttonLabel = "Learn More",
   onClick,
   className = "",
@@ -60,29 +57,6 @@ export default function ArticleCategory({
         ${className}
       `}
     >
-      {/* Image or placeholder */}
-      <div className="w-[34%] min-w-0 shrink-0">
-        {imageSrc ? (
-          <Media
-            src={imageSrc}
-            alt={imageAlt}
-            ratio="3 / 2"
-            fit="cover"
-          />
-        ) : (
-          <div
-            aria-hidden="true"
-            className="
-              flex aspect-[3/2] items-center justify-center
-              rounded-[12px] bg-rose-fantasy
-              p-2 text-center text-small text-dark-humor/60
-            "
-          >
-            Image placeholder
-          </div>
-        )}
-      </div>
-
       {/* Category content */}
       <div className="flex min-w-0 flex-1 flex-col gap-objects">
         <div className="flex items-start gap-[8px]">
@@ -100,7 +74,6 @@ export default function ArticleCategory({
           >
             <path d={category.iconPath} />
           </svg>
-
           <Heading
             level={2}
             variant={2}

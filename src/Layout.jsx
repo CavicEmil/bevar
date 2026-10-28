@@ -13,42 +13,71 @@ import { useChrome } from "./context/ChromeContext";
 
 export default function Layout() {
   const { chromeless } = useChrome();
+
   const recipeRoute = useMatch("/recipes/:id");
+  const articleRoute = useMatch("/articles/:slug");
+  const blogRoute = useMatch("/blog");
+
   const matches = useMatches();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
 
   const recipe = recipeRoute
     ? matches
-        .map(match => match.loaderData)
-        .find(data => data?.id === recipeRoute.params.id)
+        .map((match) => match.loaderData)
+        .find((data) => data?.id === recipeRoute.params.id)
     : null;
 
   const isGuide =
     Boolean(recipeRoute) && searchParams.get("guide") === "1";
 
+  const isArticleResults =
+    Boolean(blogRoute) && searchParams.get("view") === "all";
+
   function handleBack() {
+    if (articleRoute) {
+      navigate("/blog");
+      window.scrollTo(0, 0);
+      return;
+    }
+
+    if (isArticleResults) {
+      const next = new URLSearchParams(searchParams);
+      next.delete("view");
+      setSearchParams(next, { replace: true });
+      window.scrollTo(0, 0);
+      return;
+    }
+
     if (isGuide) {
       const next = new URLSearchParams(searchParams);
       next.delete("guide");
       setSearchParams(next, { replace: true });
-    } else {
-      navigate("/recipes");
+      window.scrollTo(0, 0);
+      return;
     }
 
+    navigate("/recipes");
     window.scrollTo(0, 0);
   }
 
   return (
-    <div className="min-h-[100dvh] flex flex-col">
-      {!chromeless && 
-      <Header
-        variant={recipeRoute ? "title" : "logo"}
-        title={recipe?.title ?? ""}
-        isGuide={isGuide}
-        onBack={handleBack}
-      />
-      }
+    <div className="flex min-h-[100dvh] flex-col">
+      {!chromeless && (
+        <Header
+          variant={
+            recipeRoute || articleRoute || isArticleResults
+              ? "title"
+              : "logo"
+          }
+          title={recipe?.title ?? ""}
+          isGuide={isGuide}
+          backLabel={
+            articleRoute || isArticleResults ? "Learn" : undefined
+          }
+          onBack={handleBack}
+        />
+      )}
 
       <Container>
         <main className="flex-1">

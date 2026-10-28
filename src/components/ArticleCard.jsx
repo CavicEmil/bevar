@@ -14,7 +14,7 @@ export default function ArticleCard({
 }) {
   const navigate = useNavigate();
   const isHero = variant === "hero";
-  const detailUrl = `/articles/${article.slug}`;   // slug, as we decided
+  const detailUrl = `/articles/${article.slug}`;
 
   return (
     <Card

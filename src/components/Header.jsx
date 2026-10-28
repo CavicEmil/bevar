@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link, useLocation, useMatch, useNavigate } from "react-router";
+
 import Button from "./ui/Button";
 import logo from "../assets/logo-big.png";
 
@@ -8,32 +9,40 @@ export default function Header({
   title = "",
   isGuide = false,
   onBack,
+  backLabel,
 }) {
   const collectionRoute = useMatch("/profile/recipes");
   const recipeRoute = useMatch("/recipes/:id");
+
   const navigate = useNavigate();
   const location = useLocation();
+
   const source = location.state?.recipeReturnTo;
-  const origin = typeof source === "string" && source.startsWith("/") && !source.startsWith("//")
-    ? source
-    : null;
+  const origin =
+    typeof source === "string" &&
+    source.startsWith("/") &&
+    !source.startsWith("//")
+      ? source
+      : null;
+
   const currentPath = location.pathname + location.search;
+
   const [navigation, setNavigation] = useState({
     key: location.key,
     path: currentPath,
     returnTo: origin ?? "/recipes",
   });
 
-  // Keep the origin when opening or closing the guide on the same recipe.
+  /* Keep the previous route as the return destination. */
   if (navigation.key !== location.key) {
     setNavigation({
       key: location.key,
       path: currentPath,
-      returnTo: origin ?? (
-        navigation.path.split("?")[0] !== location.pathname
+      returnTo:
+        origin ??
+        (navigation.path.split("?")[0] !== location.pathname
           ? navigation.path
-          : navigation.returnTo
-      ),
+          : navigation.returnTo),
     });
   }
 
@@ -43,19 +52,23 @@ export default function Header({
     "/profile/recipes": "My recipes",
     "/profile": "My profile",
     "/blog": "Learn",
+    "/articles": "Learn",
     "/login": "Log in",
     "/signup": "Sign up",
   };
+
   const returnPath = navigation.returnTo.split("?")[0];
-  const returnLabel = collectionRoute
-    ? "My profile"
-    : window.history.state?.idx > 0
-      ? pageLabels[returnPath] ?? "Back"
-      : "Recipes";
+
+  const returnLabel =
+    collectionRoute
+      ? "My profile"
+      : window.history.state?.idx > 0
+        ? pageLabels[returnPath] ?? "Back"
+        : "Recipes";
 
   function handleBack() {
-    if (isGuide) {
-      onBack?.();
+    if (onBack) {
+      onBack();
       return;
     }
 
@@ -64,23 +77,23 @@ export default function Header({
       return;
     }
 
-    if (recipeRoute) {
-      if (window.history.state?.idx > 0) {
-        navigate(-1);
-      } else {
-        navigate("/recipes", { replace: true });
-      }
+    if (recipeRoute && window.history.state?.idx > 0) {
+      navigate(-1);
       return;
     }
 
-    onBack?.();
+    navigate("/recipes");
   }
 
   return (
     <header className="w-full text-white">
       <div className="flex min-h-20 items-center gap-related px-page py-4 sm:py-5">
         {variant === "logo" && !collectionRoute ? (
-          <Link to="/" aria-label="Go to home" className="inline-flex">
+          <Link
+            to="/"
+            aria-label="Go to home"
+            className="inline-flex"
+          >
             <img
               src={logo}
               alt="BEVAR"
@@ -92,12 +105,18 @@ export default function Header({
             <Button
               variant="ghost"
               icon={isGuide ? "exit" : "back"}
-              content={isGuide ? "Exit" : returnLabel}
+              content={
+                isGuide
+                  ? "Exit"
+                  : backLabel ?? returnLabel
+              }
               ariaLabel={isGuide ? "Exit guide" : "Go back"}
               onClick={handleBack}
-              className={isGuide
-                ? "shrink-0 text-heading-3! [&_svg]:rotate-180"
-                : "min-w-0 justify-start! text-left text-heading-3!"}
+              className={
+                isGuide
+                  ? "shrink-0 text-heading-3! [&_svg]:rotate-180"
+                  : "min-w-0 justify-start! text-left text-heading-3!"
+              }
             />
 
             {isGuide && (
