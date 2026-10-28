@@ -1,3 +1,20 @@
+.recipe-card-tags > span:first-child,
+.recipe-card-tags > span > span:last-child {
+  border: 1px solid var(--color-spicy-berry);
+  border-radius: 999px;
+  padding: 4px 8px;
+  color: var(--color-spicy-berry);
+}
+
+.recipe-card-tags > span > span[aria-hidden="true"] {
+  display: none;
+}
+
+.recipe-hero-tags > span:first-child,
+.recipe-hero-tags > span > span:last-child {
+  padding: 6px 10px;
+}
+
 .navigation-card {
   transform-origin: center;
   transition: transform 220ms cubic-bezier(0.22, 1.4, 0.36, 1);

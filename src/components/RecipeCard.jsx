@@ -17,11 +17,13 @@ export default function RecipeCard({
   variant = "tile",
   isSaved = false,
   onToggleSave,
+  outlinedTags = false,
+  recipeBasePath = "/recipes",
 }) {
   const navigate = useNavigate();
   const location = useLocation();
   const isHero = variant === "hero";
-  const detailUrl = `/recipes/${recipe.id}`;
+  const detailUrl = `${recipeBasePath}/${recipe.id}`;
   const isTransitioning = useViewTransitionState(detailUrl);
   const navigationState = {
     recipeReturnTo: location.pathname + location.search,
@@ -67,7 +69,7 @@ export default function RecipeCard({
           className="pl-card-sm text-dark-humor"
         />
 
-        <div className="flex flex-wrap items-center gap-x-[10px] gap-y-[5px] m-card-sm">
+        <div className={`flex flex-wrap items-center gap-x-[10px] gap-y-[5px] m-card-sm ${outlinedTags ? `recipe-card-tags ${isHero ? "recipe-hero-tags" : ""}` : ""}`}>
           <Tag label={`${recipe.prep_time_minutes} min`} />
 
           <span className="inline-flex items-center gap-[10px] text-rhodophobia">

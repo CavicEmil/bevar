@@ -104,7 +104,7 @@ export default function HomePreview() {
                 empty={`No recipes match “${query}”.`}
               >
                 {visibleRecipes.map((recipe) => (
-                  <RecipeCard key={recipe.id} recipe={recipe} variant="tile" />
+                  <RecipeCard key={recipe.id} recipe={recipe} variant="tile" outlinedTags recipeBasePath="/playground/marta/recipes" />
                 ))}
               </SearchResults>
 
@@ -130,7 +130,7 @@ export default function HomePreview() {
 
             <Carousel className="home-recipes">
               {topRecipes.map((recipe) => (
-                <RecipeCard key={recipe.id} recipe={recipe} variant="hero" />
+                <RecipeCard key={recipe.id} recipe={recipe} variant="hero" outlinedTags recipeBasePath="/playground/marta/recipes" />
               ))}
             </Carousel>
           

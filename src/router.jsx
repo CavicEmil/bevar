@@ -26,6 +26,7 @@ import { getRecipes, getRecipe } from "./api/recipes";
 import MagdaPlayground from "./views/playground/MagdaPlayground";
 import EmilPlayground from "./views/playground/EmilPlayground";
 import MartaPlayground from "./views/playground/MartaPlayground";
+import RecipePreview from "./views/playground/RecipePreview";
 import JosiePlayground from "./views/playground/JosiePlayground";
 
 function RequireAuth({ children }) {
@@ -159,6 +160,11 @@ export const router = createBrowserRouter([
       {
         path: "playground/marta",
         element: <MartaPlayground />,
+      },
+      {
+        path: "playground/marta/recipes/:id",
+        loader: ({ params }) => getRecipe(params.id),
+        element: <RecipePreview />,
       },
       {
         path: "playground/josie",

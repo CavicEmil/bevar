@@ -15,12 +15,12 @@ const formatAmount = amount => new Intl.NumberFormat("en-GB", { maximumSignifica
 const ingredientAmount = row => row.unit?.trim().toLowerCase() === "to taste"
   ? row.unit : `${formatAmount(row.amount)} ${row.unit}`;
 
-export default function Recipe() {
+export default function Recipe({ outlinedTags = false }) {
   const recipe = useLoaderData();
-  return <RecipeContent key={recipe.id} recipe={recipe} />;
+  return <RecipeContent key={recipe.id} recipe={recipe} outlinedTags={outlinedTags} />;
 }
 
-export function RecipeContent({ recipe }) {
+export function RecipeContent({ recipe, outlinedTags = false }) {
   const saved = useSavedRecipes();
   const isSaved = saved.isSaved(recipe.id);
   const isSaving = saved.isLoading || saved.pendingIds.has(recipe.id);
@@ -116,7 +116,7 @@ export function RecipeContent({ recipe }) {
                 {saveError}
               </p>
             )}
-            <div className="flex flex-wrap items-center gap-x-[12px] gap-y-[8px]" aria-label="Recipe details">
+            <div className={`flex flex-wrap items-center gap-x-[12px] gap-y-[8px] ${outlinedTags ? "marta-recipe-detail-tags" : ""}`} aria-label="Recipe details">
               {[
                 recipe.prep_time_minutes != null && {
                   key: "time",

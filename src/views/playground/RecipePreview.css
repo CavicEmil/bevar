@@ -1,0 +1,10 @@
+.marta-recipe-detail-tags > span > span:last-child {
+  border: 1px solid var(--color-spicy-berry);
+  border-radius: 999px;
+  padding: 6px 10px;
+  color: var(--color-spicy-berry);
+}
+
+.marta-recipe-detail-tags > span > span[aria-hidden="true"] {
+  display: none;
+}
