@@ -1,0 +1,75 @@
+.article-card--tile {
+  display: grid;
+  grid-template-rows: 96px 84px 37px minmax(40px, 1fr);
+  gap: 8px;
+  height: 320px;
+  padding: 16px;
+}
+
+.article-card--tile > :first-child {
+  flex-shrink: 0;
+  height: 96px;
+}
+
+.article-card--tile > :is(h1, h2, h3) {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
+  flex-shrink: 0;
+  height: 4.2em;
+  max-height: 4.2em;
+}
+
+.article-card--tile > h1 + div,
+.article-card--tile > h2 + div,
+.article-card--tile > h3 + div {
+  display: grid;
+  grid-template-rows: 17px 17px;
+  margin: 0 0 0 var(--spacing-card-sm, 14px);
+  align-items: start;
+  gap: 3px;
+  flex-shrink: 0;
+}
+
+.article-card--tile > :is(h1, h2, h3) + div > :first-child {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+  overflow: hidden;
+  color: var(--color-spicy-berry, #cc2e5f);
+}
+
+.article-card--tile > a {
+  display: inline-flex;
+  align-items: center;
+  margin-top: 0;
+  padding-bottom: 0;
+  min-height: 40px;
+  flex-shrink: 0;
+}
+
+.article-card--tile > button[aria-pressed] {
+  top: 20px;
+  right: 20px;
+  padding: 5px !important;
+  border-radius: 9px;
+}
+
+.article-card--tile > button[aria-pressed] svg {
+  width: 16px;
+  height: 16px;
+}
+
+.article-card--tile > button[aria-pressed] span[aria-hidden="true"] {
+  width: 18px;
+  height: 18px;
+}
+
+.article-card--tile > :first-child { max-height: 120px; }
+
+.article-card--hero > button[aria-pressed] { top: 24px; right: 24px; }
+
+.article-card--hero > div.flex.flex-wrap > :first-child {
+  color: var(--color-spicy-berry, #cc2e5f);
+}

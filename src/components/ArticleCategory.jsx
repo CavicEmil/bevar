@@ -67,7 +67,7 @@ export default function ArticleCategory({
         strokeWidth="1.8"
         strokeLinecap="round"
         strokeLinejoin="round"
-        className="shrink-0"
+        className="shrink-0 text-spicy-berry"
       >
         <path d={category.iconPath} />
       </svg>

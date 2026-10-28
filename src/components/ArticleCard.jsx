@@ -7,6 +7,7 @@ import Tag from "./ui/Tag";
 import Media from "./ui/Media";
 import { getPublicUrl } from "../api/media";
 import "./cardTransitions.css";
+import "./ArticleCard.css";
 
 export default function ArticleCard({
   article,
@@ -23,7 +24,7 @@ export default function ArticleCard({
     <Card
       variant="default"
       size={isHero ? "lg" : "sm"}
-      className={`navigation-card ${isTransitioning ? "article-card-source" : ""} group relative flex flex-col gap-card-sm pt-4 px-4 ${
+      className={`navigation-card ${isHero ? "article-card--hero" : "article-card--tile"} ${isTransitioning ? "article-card-source" : ""} group relative flex flex-col gap-card-sm pt-4 px-4 ${
         isHero ? "" : "transition-shadow hover:shadow-md"
       }`}
     >
