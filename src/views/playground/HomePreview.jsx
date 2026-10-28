@@ -142,7 +142,15 @@ export default function HomePreview() {
                 {(categories ?? []).map(category => (
                   <Link key={category.id} to={`/recipes?categoryIds=${encodeURIComponent(category.id)}`} state={{ fromHome: true }}
                     className="inline-flex min-h-[44px] shrink-0 items-center gap-[8px] whitespace-nowrap rounded-[14px] bg-white px-[16px] py-[10px] text-small text-dark-humor transition-colors hover:bg-poplar-pink focus-visible:outline-2 focus-visible:outline-spicy-berry">
-                    {category.category_image_path && <img src={getPublicUrl(BUCKETS.categoryImages, category.category_image_path)} alt="" className="size-[22px] object-contain" />}
+                    {category.category_image_path && (
+                      <span aria-hidden="true" className="size-[22px] shrink-0 bg-spicy-berry"
+                        style={{
+                          maskImage: `url("${getPublicUrl(BUCKETS.categoryImages, category.category_image_path)}")`,
+                          maskSize: "contain",
+                          maskRepeat: "no-repeat",
+                          maskPosition: "center",
+                        }} />
+                    )}
                     {category.category}
                   </Link>
                 ))}
