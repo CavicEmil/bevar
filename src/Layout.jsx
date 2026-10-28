@@ -14,7 +14,7 @@ import { useChrome } from "./context/ChromeContext";
 
 export default function Layout() {
   const { chromeless } = useChrome();
-  const { pathname } = useLocation();
+  const { pathname, state } = useLocation();
   const isAuthPage = pathname === "/login" || pathname === "/signup";
 
   const recipeRoute = useMatch("/recipes/:id");
@@ -37,8 +37,14 @@ export default function Layout() {
   const isArticleResults =
     Boolean(blogRoute) && searchParams.get("view") === "all";
   const isEditingProfile = pathname === "/profile" && searchParams.get("edit") === "1";
+  const isHomeMethodResults = pathname === "/recipes" && state?.fromHome === true;
 
   function handleBack() {
+    if (isHomeMethodResults) {
+      navigate("/");
+      window.scrollTo(0, 0);
+      return;
+    }
     if (isEditingProfile) {
       const next = new URLSearchParams(searchParams);
       next.delete("edit");
@@ -77,14 +83,14 @@ export default function Layout() {
       {!chromeless && (
         <Header
           variant={
-            recipeRoute || articleRoute || isArticleResults || isEditingProfile
+            recipeRoute || articleRoute || isArticleResults || isEditingProfile || isHomeMethodResults
               ? "title"
               : "logo"
           }
           title={recipe?.title ?? ""}
           isGuide={isGuide}
           backLabel={
-            isEditingProfile ? "Back to profile" : articleRoute || isArticleResults ? "Learn" : undefined
+            isHomeMethodResults ? "Back to home" : isEditingProfile ? "Back to profile" : articleRoute || isArticleResults ? "Learn" : undefined
           }
           onBack={handleBack}
         />

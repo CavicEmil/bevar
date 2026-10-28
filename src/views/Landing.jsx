@@ -183,7 +183,7 @@ export default function Landing() {
               {categoriesError && <p role="alert" className="mt-[12px] text-small">Methods couldn’t be loaded. Please refresh to try again.</p>}
               <div className="mt-[12px] flex flex-nowrap gap-[10px] overflow-x-auto pb-[8px]" tabIndex={0} role="region" aria-label="Method categories, scroll horizontally">
                 {(categories ?? []).map(category => (
-                  <Link key={category.id} to={`/recipes?categoryIds=${encodeURIComponent(category.id)}`}
+                  <Link key={category.id} to={`/recipes?categoryIds=${encodeURIComponent(category.id)}`} state={{ fromHome: true }}
                     className="inline-flex min-h-[44px] shrink-0 items-center gap-[8px] whitespace-nowrap rounded-[14px] bg-white px-[16px] py-[10px] text-small text-dark-humor transition-colors hover:bg-poplar-pink focus-visible:outline-2 focus-visible:outline-spicy-berry">
                     {category.category_image_path && <img src={getPublicUrl(BUCKETS.categoryImages, category.category_image_path)} alt="" className="size-[22px] object-contain" />}
                     {category.category}
