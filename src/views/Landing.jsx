@@ -3,7 +3,7 @@ import { useEffect, useState, useMemo } from "react";
 import { Link } from "react-router";
 import SearchBar from "../components/SearchBar"; 
 import Heading from "../components/ui/Heading";
-import Spinner from "../components/ui/Spinner";
+import WelcomeScreen from "../components/WelcomeScreen";
 import Card from "../components/ui/Card";
 import RecipeCard from "../components/RecipeCard";
 import ArticleCard from "../components/ArticleCard";
@@ -15,11 +15,11 @@ import Onboarding from "../components/Onboarding";
 import { useLoader } from "../hooks/useLoader";
 import { getRecipes } from "../api/recipes";
 import { getArticles } from "../api/article";
-import logo from '../assets/logo-big.png';
 import { useChrome } from "../context/ChromeContext"; 
 
 const ONBOARDING_KEY = "bevar:seen-onboarding";
-const SPLASH_MIN_MS = 1100;
+const WELCOME_VARIANT = "animated"; // Set to "classic" for the original logo and spinner.
+const SPLASH_MIN_MS = WELCOME_VARIANT === "animated" ? 2200 : 1100;
 
 function SearchResults({ heading, count, empty, children }) {
   return (
@@ -117,12 +117,7 @@ export default function Landing() {
 
   /* ---- phases ---- */
   if (phase === "splash") {
-    return (
-      <div className="flex min-h-[100dvh] bg-dark-humor flex-col items-center justify-center gap-related">
-        <img src={logo} alt="Bevar" className="w-[200px]" /> 
-        <Spinner />
-      </div>
-    );
+    return <WelcomeScreen variant={WELCOME_VARIANT} />;
   }
 
 
