@@ -84,7 +84,7 @@ export function RecipeContent({ recipe }) {
   }
 
   return (
-    <Card className="recipe-card-destination mx-auto flex w-full max-w-lg flex-col gap-section rounded-t-[28px] rounded-b-none bg-white px-[24px] pt-page pb-[calc(100px+env(safe-area-inset-bottom,0px))] font-the-one text-dark-humor">
+    <Card className="recipe-card-destination mx-auto flex w-full max-w-lg flex-1 flex-col gap-section rounded-t-[28px] rounded-b-none bg-white px-[24px] pt-page pb-[calc(100px+env(safe-area-inset-bottom,0px))] font-the-one text-dark-humor">
           <Card variant="fruit" className="rounded-card p-card-lg">
             <Media src={imageUrl(BUCKETS.recipeImages, recipe.hero_image_path)} alt={recipe.title}
               ratio="313 / 140" fit="contain" priority className="rounded-none" />

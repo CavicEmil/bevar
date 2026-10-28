@@ -96,8 +96,8 @@ export default function Layout() {
         />
       )}
 
-      <Container>
-        <main className="flex-1">
+      <Container className={recipeRoute && !isGuide ? "flex flex-1 flex-col" : ""}>
+        <main className={recipeRoute && !isGuide ? "flex flex-1 flex-col" : "flex-1"}>
           <Outlet />
         </main>
       </Container>
