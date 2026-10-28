@@ -83,7 +83,7 @@ export default function ArticleCard({
         onClick={(event) => {
           event.preventDefault();
           event.stopPropagation();
-          onToggleSave?.(recipe.id);
+          onToggleSave?.(article.id);
         }}
         className="!min-h-0 !p-[8px] absolute right-[16px] top-[16px] self-end text-dark-humor hover:text-spicy-berry"
       />

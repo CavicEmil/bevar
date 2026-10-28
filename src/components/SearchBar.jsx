@@ -6,6 +6,8 @@ export default function SearchBar({
   onChange,
   suggestions = [],
   onSelect,
+  placeholder = "Search fruit or recipe",
+  ariaLabel = "Search recipes",
 }) {
   const id = useId();
   const [open, setOpen] = useState(false);
@@ -98,11 +100,11 @@ export default function SearchBar({
         <Input
           variant="search"
           value={value}
-          placeholder="Search fruit or recipe"
           autoComplete="off"
           className="[&_input]:min-h-[50px] [&_input]:pl-[42px]"
           role="combobox"
-          aria-label="Search recipes"
+          placeholder={placeholder}
+          aria-label={ariaLabel}
           aria-autocomplete="list"
           aria-expanded={expanded}
           aria-controls={expanded ? id : undefined}

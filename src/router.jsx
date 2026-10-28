@@ -12,6 +12,9 @@ import MyRecipes from "./views/MyRecipes";
 import Login from "./components/Login";
 import SignUp from "./components/SignUp";
 
+import Articles from "./views/Articles";
+import { getArticles } from "./api/article";
+
 import { getRecipes, getRecipe } from "./api/recipes";
 
 /* Temporary component testing pages */
@@ -42,6 +45,9 @@ export const router = createBrowserRouter([
         index: true,
         element: <Landing />,
       },
+
+
+      
       {
         path: "recipes",
         children: [

@@ -1,24 +1,54 @@
 import { supabase } from './client';
 import { unwrap } from './helper';
 
-/* get all the articles from the db */
-export async function getArticles({ category } = {}) {
+/* Load articles with their linked fruit and preservation category. */
+export async function getArticles({
+  category,
+  fruitId,
+  categoryId,
+} = {}) {
   let query = supabase
     .from("articles")
-    .select("*")
-    .order("created_at", { ascending: false });
-  if (category) query = query.eq("article_category", category);
+    .select(`
+      *,
+      fruit:fruits(*),
+      preservation_category:category(*)
+    `)
+    .order("published_at", {
+      ascending: false,
+      nullsFirst: false,
+    });
+
+  /* Article topics: Methods, Storage, Equipment, etc. */
+  if (category) {
+    query = query.eq("article_category", category);
+  }
+
+  if (fruitId) {
+    query = query.eq("fruit_id", fruitId);
+  }
+
+  /* Preservation categories: Freezing, Jam, etc. */
+  if (categoryId) {
+    query = query.eq("category_id", categoryId);
+  }
+
   return unwrap(await query);
 }
 
-/* get a single article by id */
-export async function getArticle(id) {
-    return unwrap(await supabase
-        .from('articles')
-        .select('*')
-        .eq('id', id)
-        .single()
-    );
+/* Load a single article using the slug from its card link. */
+export async function getArticle(slug) {
+  return unwrap(
+    await supabase
+      .from("articles")
+      .select(`
+        *,
+        fruit:fruits(*),
+        preservation_category:category(*)
+      `)
+      .eq("slug", slug)
+      .single()
+  );
 }
 
 /* lets say we want to CREATE an article */
