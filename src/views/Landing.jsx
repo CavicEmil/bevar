@@ -171,7 +171,7 @@ export default function Landing() {
               </Link>
             </div>
 
-            <Carousel>
+            <Carousel className="home-recipes">
               {topRecipes.map((recipe) => (
                 <RecipeCard key={recipe.id} recipe={recipe} variant="hero" />
               ))}

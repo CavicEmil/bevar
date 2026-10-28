@@ -1,3 +1,8 @@
+.home-recipes .navigation-card button[aria-pressed] {
+  top: 24px;
+  right: 24px;
+}
+
 .home-articles .navigation-card {
   height: 320px;
 }
@@ -37,4 +42,21 @@
 .home-articles .navigation-card > a {
   margin-top: 4px;
   flex-shrink: 0;
+}
+
+.home-articles .navigation-card > button[aria-pressed] {
+  top: 20px;
+  right: 20px;
+  padding: 5px !important;
+  border-radius: 9px;
+}
+
+.home-articles .navigation-card > button[aria-pressed] svg {
+  width: 16px;
+  height: 16px;
+}
+
+.home-articles .navigation-card > button[aria-pressed] span[aria-hidden="true"] {
+  width: 18px;
+  height: 18px;
 }
