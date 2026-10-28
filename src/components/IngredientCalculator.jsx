@@ -103,12 +103,12 @@ function Calculator({ recipe, onApply, baseIngredientId, initialAmount, note, cl
     <Card className={`w-full rounded-[28px] p-page font-the-one text-dark-humor ${className}`}>
       <form onSubmit={apply} onInput={event => {
         if (event.target.name === "fruitAmount") changeAmount(event);
-      }} className="flex flex-col items-start gap-[16px]" aria-label="Ingredient calculator" aria-busy={!rows && !loadError || pending}>
+      }} className="flex w-full flex-col items-stretch gap-[16px]" aria-label="Ingredient calculator" aria-busy={!rows && !loadError || pending}>
         <Heading level={2} variant={1} content="Calculate ingredients" />
         <p className="text-body">Make the recipe fit your amount.</p>
         {!rows && !loadError && <p role="status" className="text-body">Loading ingredients…</p>}
         {(loadError || dataError) && <p role="alert" className="text-body">{loadError || dataError}</p>}
-        <Input variant="calculator" className="w-full [&_input]:max-w-[205px] [&_input]:text-[28px]"
+        <Input variant="calculator" className="w-full [&_input]:text-[28px]"
           name="fruitAmount" unit={inputUnit} value={value} min={0} step="any" disabled={pending}
           onChange={changeAmount}
           error={validData && !valid ? "Enter a fruit amount greater than zero." : undefined} />
@@ -118,15 +118,16 @@ function Calculator({ recipe, onApply, baseIngredientId, initialAmount, note, cl
             const id = row.ingredient_id ?? row.ingredients?.id;
             const result = calculated[index] ?? (input === null ? row : null);
             const hasAmount = result && result.amount !== null && result.amount !== "" && Number.isFinite(Number(result.amount));
-            return <div key={id} className="grid grid-cols-[minmax(0,170fr)_minmax(0,127fr)] gap-[8px] border-b border-rose-fantasy py-[12px] text-body">
-              <dt>{row.ingredients?.name}</dt>
-              <dd className="m-0 font-semibold">{toTaste(row) ? row.unit : hasAmount ? `${format(Number(result.amount))} ${row.unit}` : "—"}</dd>
+            return <div key={id} className="grid w-full grid-cols-[minmax(0,1fr)_auto] items-start gap-[16px] border-b border-rose-fantasy py-[12px] text-body">
+              <dt className="min-w-0 break-words">{row.ingredients?.name}</dt>
+              <dd className="m-0 text-right font-semibold whitespace-nowrap">{toTaste(row) ? row.unit : hasAmount ? `${format(Number(result.amount))} ${row.unit}` : "—"}</dd>
             </div>;
           })}
         </dl>
         {note && <p className="text-[11px] leading-[1.4]">{note}</p>}
         {applyError && <p role="alert" className="text-body">{applyError}</p>}
         <Button type="submit" content={pending ? "Applying…" : "Use this amount"}
+          className="w-full"
           disabled={!valid || pending || typeof onApply !== "function"} />
       </form>
     </Card>

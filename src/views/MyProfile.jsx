@@ -73,14 +73,14 @@ export default function MyProfile() {
   }
 
   return (
-    <Card variant="fruit" className="mx-auto flex min-h-[calc(100dvh-80px-76px)] w-full max-w-lg flex-col gap-[14px] rounded-t-[28px] rounded-b-none px-[20px]! pt-[24px]! pb-[calc(24px+env(safe-area-inset-bottom,0px))]! font-the-one text-dark-humor">
-      <div className="grid grid-cols-[minmax(72px,104px)_minmax(0,1fr)] items-start gap-section">
+    <Card variant="fruit" className="mx-auto flex min-h-[calc(100dvh-80px-76px-env(safe-area-inset-bottom,0px))] w-full max-w-lg flex-col gap-[clamp(6px,1dvh,14px)] rounded-t-[28px] rounded-b-none px-[20px]! py-[clamp(12px,2dvh,24px)]! font-the-one text-dark-humor">
+      <div className="grid grid-cols-[minmax(72px,104px)_minmax(0,1fr)] items-start gap-[12px]">
         <div className="aspect-square overflow-hidden rounded-[10px] bg-poplar-pink">
           {avatar ? <Media src={avatar} alt="Your profile photo" ratio="1 / 1" className="rounded-[10px]" /> : (
             <div aria-label="Profile photo placeholder" className="flex h-full items-center justify-center text-heading-1">{initials || "?"}</div>
           )}
         </div>
-        <div className="flex min-w-0 flex-col items-start gap-[8px]">
+        <div className="flex min-w-0 flex-col items-start gap-[6px]">
           <div className="w-full min-w-0">
             <Heading content={firstName ? `Hi, ${firstName}!` : "Hi!"} level={1} variant={2} />
             <p className="break-words text-body">{email}</p>
@@ -91,9 +91,9 @@ export default function MyProfile() {
       </div>
       {profileError && <p role="alert" className="text-small">{profileError}</p>}
 
-      <div className="flex flex-col gap-[12px]">
-        <CollectionCard variant="recipes" items={saved.recipes} loading={saved.isLoading} />
-        <CollectionCard variant="articles" items={savedArticles.articles} loading={savedArticles.isLoading} />
+      <div className="flex flex-col gap-[clamp(0px,0.4dvh,6px)]">
+        <CollectionCard variant="recipes" items={saved.recipes} loading={saved.isLoading} compact />
+        <CollectionCard variant="articles" items={savedArticles.articles} loading={savedArticles.isLoading} compact />
         {savedArticles.error && <p role="alert" className="text-small text-spicy-berry">{savedArticles.error}</p>}
       </div>
       {saved.error && (
@@ -103,14 +103,14 @@ export default function MyProfile() {
         </div>
       )}
 
-      <div className="flex flex-col gap-[14px]">
+      <div className="flex flex-col gap-[clamp(6px,1dvh,10px)]">
         {[["Settings", settingsIcon], ["Give feedback", feedbackIcon]].map(([label, icon]) => (
           <Button key={label} variant="secondary" disabled ariaLabel={`${label} — coming soon`}
             content={<span className="flex w-full items-center gap-related"><img src={icon} alt="" /><span className="flex-1 text-left">{label}</span><img src={chevronIcon} alt="" /></span>}
             className="min-h-[40px]! w-full py-[10px]! opacity-100! [&>span]:w-full" />
         ))}
       </div>
-      <div className="mt-[20px] flex flex-col gap-related">
+      <div className="flex flex-col gap-related">
         {logoutError && <p role="alert" className="text-small">{logoutError}</p>}
         <Button content={loggingOut ? "Logging out…" : "Log out"} disabled={loggingOut} onClick={handleLogout} className="w-full" />
       </div>

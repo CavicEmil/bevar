@@ -47,6 +47,7 @@ export default function CollectionCard({
   count = items.length,
   loading = false,
   disabled = false,
+  compact = false,
 }) {
   const navigate = useNavigate();
   const selected = variants[variant] ?? variants.recipes;
@@ -55,17 +56,21 @@ export default function CollectionCard({
   const bucket = variant === "articles" ? BUCKETS.articleImages : BUCKETS.recipeImages;
 
   return (
-    <div className="relative pt-[20px]" aria-label={selected.title}>
+    <div className={`relative ${compact ? "pt-[clamp(12px,2dvh,20px)]" : "pt-[20px]"}`} aria-label={selected.title}>
       <Card
         variant={selected.card}
-        className={`relative min-h-[138px] rounded-[15px] p-[15px]! pr-[132px]! ${
+        className={`relative rounded-[15px] ${compact
+          ? "min-h-[clamp(112px,16dvh,138px)] p-[12px]! pr-[clamp(108px,16dvh,132px)]!"
+          : "min-h-[138px] p-[15px]! pr-[132px]!"} ${
           variant === "articles" ? "border-2 border-dark-humor!" : ""
         }`}
       >
-        <div className={`flex min-h-[108px] flex-col justify-between gap-related ${
+        <div className={`flex flex-col justify-between ${compact
+          ? "min-h-[clamp(84px,12dvh,108px)] gap-[4px]"
+          : "min-h-[108px] gap-related"} ${
           variant === "articles" ? "text-dark-humor" : "text-poplar-pink"
         }`}>
-          <div className="flex flex-col gap-objects">
+          <div className={`flex flex-col ${compact ? "gap-[3px]" : "gap-objects"}`}>
             <div className="flex items-center gap-related">
               <CollectionIcon variant={variant} />
               <Heading content={selected.title} level={2} variant={3} />
@@ -78,7 +83,9 @@ export default function CollectionCard({
         </div>
       </Card>
 
-      <div aria-hidden="true" className="pointer-events-none absolute right-[16px] bottom-[10px] h-[112px] w-[112px]">
+      <div aria-hidden="true" className={`pointer-events-none absolute right-[16px] bottom-[10px] ${compact
+        ? "h-[clamp(88px,12dvh,112px)] w-[clamp(88px,12dvh,112px)]"
+        : "h-[112px] w-[112px]"}`}>
         {[2, 1, 0].map((index) => {
           const preview = previews[index] ?? previews[0];
           const path = preview?.hero_image_path;
