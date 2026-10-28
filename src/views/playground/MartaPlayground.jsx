@@ -5,6 +5,7 @@ import Container from "../../components/ui/Container";
 import Recipes from "../Recipes";
 import ArticleCategory from "../../components/ArticleCategory";
 import BevarIntroPreview from "./BevarIntroPreview";
+import EditProfilePreview from "./EditProfilePreview";
 
 export default function MartaPlayground() {
   return (
@@ -12,6 +13,7 @@ export default function MartaPlayground() {
     <main>
       <Card variant="viewbg" className="h-screen">
       <Container>
+<EditProfilePreview />
 <BevarIntroPreview />
 <Recipes />
 <ArticleCategory />

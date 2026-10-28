@@ -1,5 +1,5 @@
 import { useEffect, useLayoutEffect, useState } from "react";
-import { useNavigate } from "react-router";
+import { useNavigate, useSearchParams } from "react-router";
 import { useAuth } from "../context/AuthContext";
 import { supabase } from "../api/client";
 import { signOut } from "../api/auth";
@@ -14,18 +14,21 @@ import Media from "../components/ui/Media";
 import settingsIcon from "../assets/profile-settings.svg";
 import feedbackIcon from "../assets/profile-feedback.svg";
 import chevronIcon from "../assets/profile-chevron.svg";
+import EditProfileForm from "../components/EditProfileForm";
 
 export default function MyProfile() {
   const savedArticles = useSavedArticles();
   const { user } = useAuth();
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const editing = searchParams.get("edit") === "1";
   const saved = useSavedRecipes();
   const [profileState, setProfileState] = useState({ userId: null, data: null });
   const [logoutError, setLogoutError] = useState("");
   const [loggingOut, setLoggingOut] = useState(false);
   const userId = user?.id;
 
-  useLayoutEffect(() => { window.scrollTo({ top: 0, behavior: "instant" }); }, []);
+  useLayoutEffect(() => { window.scrollTo({ top: 0, behavior: "instant" }); }, [editing]);
   useEffect(() => {
     if (!userId) return;
     let active = true;
@@ -50,6 +53,10 @@ export default function MyProfile() {
   const fullName = profile?.name?.trim() || metadata.full_name?.trim() || metadata.name?.trim() || "";
   const firstName = metadata.first_name?.trim() || fullName.split(/\s+/)[0] || "";
   const email = user?.email || profile?.email || "";
+  const provider = user?.app_metadata?.provider || user?.identities?.[0]?.provider;
+  const providerLabel = provider === "email" || !provider
+    ? "email"
+    : ({ google: "Google", apple: "Apple", facebook: "Facebook", github: "GitHub" }[provider] || provider);
   const joined = user?.created_at || profile?.created_at;
   const joinedDate = joined ? new Date(joined) : null;
   const since = joinedDate && !Number.isNaN(joinedDate.getTime())
@@ -72,6 +79,19 @@ export default function MyProfile() {
     }
   }
 
+  if (editing) {
+    return (
+      <Card variant="fruit" className="mx-auto w-full max-w-lg px-[20px]! py-[24px]!">
+        <Button content="Back to profile" icon="back" variant="secondary" onClick={() => {
+          const next = new URLSearchParams(searchParams);
+          next.delete("edit");
+          setSearchParams(next);
+        }} />
+        <EditProfileForm key={`${userId}-${fullName}-${avatar || ""}`} initialProfile={{ name: fullName || firstName, photo: avatar || "", bio: "" }} />
+      </Card>
+    );
+  }
+
   return (
     <Card variant="fruit" className="mx-auto flex min-h-[calc(100dvh-80px-76px-env(safe-area-inset-bottom,0px))] w-full max-w-lg flex-col gap-[clamp(6px,1dvh,14px)] rounded-t-[28px] rounded-b-none px-[20px]! py-[clamp(12px,2dvh,24px)]! font-the-one text-dark-humor">
       <div className="grid grid-cols-[minmax(72px,104px)_minmax(0,1fr)] items-start gap-[12px]">
@@ -80,13 +100,16 @@ export default function MyProfile() {
             <div aria-label="Profile photo placeholder" className="flex h-full items-center justify-center text-heading-1">{initials || "?"}</div>
           )}
         </div>
-        <div className="flex min-w-0 flex-col items-start gap-[6px]">
+        <div className="flex min-w-0 flex-col items-start justify-between gap-[6px] self-stretch">
           <div className="w-full min-w-0">
             <Heading content={firstName ? `Hi, ${firstName}!` : "Hi!"} level={1} variant={2} />
-            <p className="break-words text-body">{email}</p>
           </div>
           {since && <p className="text-small">preserving since {since}</p>}
-          <Button content="Edit profile" ariaLabel="Edit profile — coming soon" className="min-h-[30px]! px-[15px]! py-[6px]! text-small!" />
+          <Button content="Edit profile" onClick={() => {
+            const next = new URLSearchParams(searchParams);
+            next.set("edit", "1");
+            setSearchParams(next);
+          }} className="min-h-[30px]! px-[15px]! py-[6px]! text-small!" />
         </div>
       </div>
       {profileError && <p role="alert" className="text-small">{profileError}</p>}
@@ -104,6 +127,16 @@ export default function MyProfile() {
       )}
 
       <div className="flex flex-col gap-[clamp(6px,1dvh,10px)]">
+        <div className="flex min-h-[40px] w-full items-center gap-related rounded-button--icons bg-white px-button py-[12px] text-rhodophobia">
+          <svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" className="shrink-0">
+            <rect x="3" y="5" width="18" height="14" rx="2" stroke="currentColor" strokeWidth="1.7" />
+            <path d="m4 7 8 6 8-6" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" />
+          </svg>
+          <div className="min-w-0">
+            <p className="text-button-big">Signed in with {providerLabel}</p>
+            <p className="break-words text-small font-normal">{email || "Email unavailable"}</p>
+          </div>
+        </div>
         {[["Settings", settingsIcon], ["Give feedback", feedbackIcon]].map(([label, icon]) => (
           <Button key={label} variant="secondary" disabled ariaLabel={`${label} — coming soon`}
             content={<span className="flex w-full items-center gap-related"><img src={icon} alt="" /><span className="flex-1 text-left">{label}</span><img src={chevronIcon} alt="" /></span>}
