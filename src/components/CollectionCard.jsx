@@ -56,17 +56,17 @@ export default function CollectionCard({
   const bucket = variant === "articles" ? BUCKETS.articleImages : BUCKETS.recipeImages;
 
   return (
-    <div className={`relative ${compact ? "pt-[clamp(12px,2dvh,20px)]" : "pt-[20px]"}`} aria-label={selected.title}>
+    <div className={`relative ${compact ? "pt-[clamp(8px,1.2dvh,12px)]" : "pt-[20px]"}`} aria-label={selected.title}>
       <Card
         variant={selected.card}
         className={`relative rounded-[15px] ${compact
-          ? "min-h-[clamp(112px,16dvh,138px)] p-[12px]! pr-[clamp(108px,16dvh,132px)]!"
+          ? "min-h-[clamp(108px,14dvh,120px)] p-[12px]! pr-[clamp(108px,16dvh,132px)]!"
           : "min-h-[138px] p-[15px]! pr-[132px]!"} ${
           variant === "articles" ? "border-2 border-dark-humor!" : ""
         }`}
       >
         <div className={`flex flex-col justify-between ${compact
-          ? "min-h-[clamp(84px,12dvh,108px)] gap-[4px]"
+          ? "min-h-[clamp(80px,10dvh,92px)] gap-[4px]"
           : "min-h-[108px] gap-related"} ${
           variant === "articles" ? "text-dark-humor" : "text-poplar-pink"
         }`}>

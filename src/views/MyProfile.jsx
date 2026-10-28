@@ -88,8 +88,8 @@ export default function MyProfile() {
   }
 
   return (
-    <Card variant="fruit" className="mx-auto flex min-h-[calc(100dvh-80px-76px-env(safe-area-inset-bottom,0px))] w-full max-w-lg flex-col gap-[clamp(6px,1dvh,14px)] rounded-t-[28px] rounded-b-none px-[20px]! py-[clamp(12px,2dvh,24px)]! font-the-one text-dark-humor">
-      <div className="grid grid-cols-[minmax(72px,104px)_minmax(0,1fr)] items-start gap-[12px]">
+    <Card variant="fruit" className="mx-auto flex min-h-[calc(100dvh-80px-76px-env(safe-area-inset-bottom,0px))] w-full max-w-lg flex-col gap-[clamp(6px,0.8dvh,10px)] rounded-t-[28px] rounded-b-none px-[20px]! py-[clamp(10px,1.4dvh,16px)]! font-the-one text-dark-humor">
+      <div className="grid grid-cols-[minmax(72px,88px)_minmax(0,1fr)] items-start gap-[12px]">
         <div className="aspect-square overflow-hidden rounded-[10px] bg-poplar-pink">
           {avatar ? <Media src={avatar} alt="Your profile photo" ratio="1 / 1" className="rounded-[10px]" /> : (
             <div aria-label="Profile photo placeholder" className="flex h-full items-center justify-center text-heading-1">{initials || "?"}</div>
@@ -109,7 +109,7 @@ export default function MyProfile() {
       </div>
       {profileError && <p role="alert" className="text-small">{profileError}</p>}
 
-      <div className="flex flex-col gap-[clamp(0px,0.4dvh,6px)]">
+      <div className="my-[clamp(8px,1.2dvh,12px)] flex flex-col gap-[clamp(0px,0.4dvh,6px)]">
         <CollectionCard variant="recipes" items={saved.recipes} loading={saved.isLoading} compact />
         <CollectionCard variant="articles" items={savedArticles.articles} loading={savedArticles.isLoading} compact />
         {savedArticles.error && <p role="alert" className="text-small text-spicy-berry">{savedArticles.error}</p>}
@@ -122,7 +122,7 @@ export default function MyProfile() {
       )}
 
       <div className="flex flex-col gap-[clamp(6px,1dvh,10px)]">
-        <div className="flex min-h-[40px] w-full items-center gap-related rounded-button--icons bg-white px-button py-[12px] text-rhodophobia">
+        <div className="flex min-h-[40px] w-full items-center gap-related rounded-button--icons bg-white px-button py-[10px] text-rhodophobia">
           <svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" className="shrink-0">
             <rect x="3" y="5" width="18" height="14" rx="2" stroke="currentColor" strokeWidth="1.7" />
             <path d="m4 7 8 6 8-6" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" />
@@ -132,13 +132,16 @@ export default function MyProfile() {
             <p className="break-words text-small font-normal">{email || "Email unavailable"}</p>
           </div>
         </div>
-        {[["Settings", settingsIcon], ["Give feedback", feedbackIcon]].map(([label, icon]) => (
+        {[
+          ["Settings", settingsIcon, "Manage your account and preferences"],
+          ["Give feedback", feedbackIcon, "Share your ideas and help improve Bevar"],
+        ].map(([label, icon, description]) => (
           <Button key={label} variant="secondary" disabled ariaLabel={`${label} — coming soon`}
-            content={<span className="flex w-full items-center gap-related"><img src={icon} alt="" /><span className="flex-1 text-left">{label}</span><img src={chevronIcon} alt="" /></span>}
+            content={<span className="flex w-full items-center gap-related"><img src={icon} alt="" className="shrink-0" /><span className="flex min-w-0 flex-1 flex-col gap-[3px] text-left whitespace-normal"><span>{label}</span><span className="text-small font-normal">{description}</span></span><img src={chevronIcon} alt="" className="shrink-0" /></span>}
             className="min-h-[40px]! w-full py-[10px]! opacity-100! [&>span]:w-full" />
         ))}
       </div>
-      <div className="flex flex-col gap-related">
+      <div className="mt-auto flex shrink-0 flex-col gap-related pt-[8px]">
         {logoutError && <p role="alert" className="text-small">{logoutError}</p>}
         <Button content={loggingOut ? "Logging out…" : "Log out"} disabled={loggingOut} onClick={handleLogout} className="w-full" />
       </div>
