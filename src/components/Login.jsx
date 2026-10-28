@@ -50,7 +50,7 @@ export default function Login() {
       aria-busy={loading}
       className="
         mx-auto flex w-full max-w-[420px]
-        flex-col gap-section px-page py-section
+        flex-col gap-section rounded-card bg-white px-page py-section
         font-the-one text-dark-humor
       "
     >
@@ -118,19 +118,22 @@ export default function Login() {
         {loading ? "Logging in…" : "Log in"}
       </button>
 
-      <p className="text-center text-small">
-        No account?{" "}
+      <div className="flex flex-col gap-related text-center">
+        <p className="text-small">No account yet?</p>
         <Link
           to="/signup"
           className="
-            font-semibold underline underline-offset-4
+            flex min-h-[48px] w-full items-center justify-center
+            rounded-button--icons bg-rose-fantasy p-button
+            text-body font-semibold text-dark-humor
             focus-visible:outline-2
+            focus-visible:outline-offset-2
             focus-visible:outline-spicy-berry
           "
         >
           Sign up
         </Link>
-      </p>
+      </div>
     </form>
   );
 }

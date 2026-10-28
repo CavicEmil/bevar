@@ -57,7 +57,7 @@ export default function SignUp() {
       aria-busy={loading}
       className="
         mx-auto flex w-full max-w-[420px]
-        flex-col gap-section px-page py-section
+        flex-col gap-section rounded-card bg-white px-page py-section
         font-the-one text-dark-humor
       "
     >
