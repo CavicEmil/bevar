@@ -5,8 +5,8 @@
   height: 88px;
   overflow: hidden;
   border-radius: 30px 30px 36px 18px;
-  background: var(--color-dark-humor);
-  color: var(--color-poplar-pink);
+  background: var(--color-spicy-berry);
+  color: white;
   font-size: 42px;
   flex-shrink: 0;
   transform: rotate(-5deg);
@@ -62,11 +62,19 @@
   transition: background-color 180ms, color 180ms;
 }
 .marta-profile-choice > input:checked + span {
-  background: var(--color-dark-humor);
-  color: var(--color-rose-fantasy);
+  background: var(--color-poplar-pink);
+  color: var(--color-dark-humor);
+  box-shadow: 0 2px 6px rgba(98, 14, 40, 0.15);
   animation: marta-profile-pop 280ms ease-out;
 }
 .marta-profile-choice > input[type="radio"] + span { display: flex; }
+.marta-profile-choice > input[type="checkbox"] + span {
+  padding: 8px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.4;
+}
 .marta-profile-field:focus-visible,
 .marta-profile-photo-link:focus-within,
 .marta-profile-choice > input:focus-visible + span {

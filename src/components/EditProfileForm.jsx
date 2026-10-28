@@ -52,7 +52,7 @@ export default function EditProfileForm({ initialProfile = {} }) {
       <p className="mb-[12px] text-small">A LITTLE MORE YOU</p>
       <Heading level={2} content="Make yourself at home." />
       <p className="mt-[10px] mb-[24px] text-body">Your kitchen, your curiosities, your next good jar.</p>
-      <Card variant="profileA" className="!p-[24px]">
+      <Card variant="fruit" className="!p-0">
         <form className="flex flex-col gap-[28px]" onSubmit={event => { event.preventDefault(); setSaved(true); }}>
           <div className="grid grid-cols-[88px_minmax(0,1fr)] items-center gap-[20px]">
             <div className="marta-profile-avatar" aria-hidden="true">
