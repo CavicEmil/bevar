@@ -10,16 +10,19 @@ import Button from "./ui/Button";
 import Tag from "./ui/Tag";
 import Media from "./ui/Media";
 import { getPublicUrl } from "../api/media";
+import useSavedRecipes from "../hooks/useSavedRecipes";
 import "./cardTransitions.css";
 
 export default function RecipeCard({
   recipe,
   variant = "tile",
-  isSaved = false,
+  isSaved: savedOverride,
   onToggleSave,
   outlinedTags = true,
   recipeBasePath = "/recipes",
 }) {
+  const saved = useSavedRecipes();
+  const isSaved = savedOverride ?? saved.isSaved(recipe.id);
   const navigate = useNavigate();
   const location = useLocation();
   const isHero = variant === "hero";
@@ -108,6 +111,7 @@ export default function RecipeCard({
           variant="primary"
           icon="saved"
           pressed={isSaved}
+          disabled={saved.isLoading || saved.pendingIds.has(recipe.id)}
           ariaLabel={
             isSaved
               ? `Remove ${recipe.title} from saved`
@@ -116,10 +120,17 @@ export default function RecipeCard({
           onClick={(event) => {
             event.preventDefault();
             event.stopPropagation();
-            onToggleSave?.(recipe.id);
+            if (onToggleSave) {
+              onToggleSave(recipe.id);
+            } else {
+              saved.toggle(recipe);
+            }
           }}
           className={`card-save-button ${isHero ? "card-save-button--hero" : "card-save-button--tile"} absolute self-end text-rhodophobia hover:text-spicy-berry`}
         />
+        {!onToggleSave && saved.error && (
+          <p role="alert" className="text-small text-spicy-berry">{saved.error}</p>
+        )}
       </Card>
     </div>
   );
