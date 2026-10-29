@@ -1,3 +1,5 @@
+import { ArticleCategoryIcon } from "../ArticleCategory";
+
 const CATEGORY_IMAGE_BUCKET = "category-images";
 
 /* Build a public Storage URL or use an existing full URL */
@@ -56,7 +58,7 @@ export default function Badge({
 
   const content = (
     <>
-      {image && (
+      {image ? (
         <img
           src={image}
           alt=""
@@ -64,7 +66,9 @@ export default function Badge({
           height={14}
           className="block size-[14px] shrink-0 object-contain"
         />
-      )}
+      ) : type === "category" ? (
+        <ArticleCategoryIcon topic={label} size={14} />
+      ) : null}
 
       <span>{label}</span>
     </>
