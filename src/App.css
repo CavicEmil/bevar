@@ -1,6 +1,76 @@
 @import url("https://use.typekit.net/pvc7non.css");
 @import "tailwindcss";
 
+/* Save confirmation strip, positioned above the bottom navigation. */
+.save-notification-region {
+  position: fixed;
+  z-index: 60;
+  bottom: calc(92px + env(safe-area-inset-bottom, 0px));
+  left: 50%;
+  width: min(calc(100% - 40px), 440px);
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+.save-notification {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 52px;
+  padding: 14px 16px;
+  border-radius: 10px;
+  background: rgb(98 14 40 / 90%);
+  color: var(--color-white);
+  font-family: var(--font-the-one);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.4;
+  box-shadow: 0 4px 12px rgb(57 9 24 / 16%);
+  animation:
+    save-notification-in 180ms ease-out,
+    save-notification-out 300ms ease-out 1200ms forwards;
+}
+
+.save-notification svg { flex-shrink: 0; }
+
+.bevar-button[data-bookmark-animation] > span[aria-hidden="true"] {
+  transform-origin: center;
+  animation: bookmark-save-bounce 420ms ease-out both;
+}
+
+.bevar-button[data-bookmark-animation="remove"] > span[aria-hidden="true"] {
+  animation-name: bookmark-remove-bounce;
+}
+
+@keyframes bookmark-save-bounce {
+  0% { transform: scale(0.75) translateY(3px); }
+  45% { transform: scale(1.18) translateY(-2px); }
+  70% { transform: scale(0.95); }
+  100% { transform: scale(1); }
+}
+
+@keyframes bookmark-remove-bounce {
+  0% { transform: scale(1); }
+  35% { transform: scale(0.8) translateY(2px); }
+  70% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+@keyframes save-notification-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes save-notification-out {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .save-notification,
+  .bevar-button[data-bookmark-animation] > span[aria-hidden="true"] { animation: none; }
+}
+
 @theme {
   /* Colours */
   --color-rose-fantasy: #F1E8EA;

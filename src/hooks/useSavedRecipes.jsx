@@ -2,6 +2,7 @@ import { useEffect, useMemo, useSyncExternalStore } from "react";
 import { useNavigate } from "react-router";
 import { supabase } from "../api/client";
 import { useAuth } from "../context/AuthContext";
+import { useSaveNotification } from "../context/SaveNotificationContext";
 
 const emptyState = { recipes: [], loading: false, ready: false, pendingIds: new Set(), error: "" };
 const accounts = new Map();
@@ -47,6 +48,7 @@ async function load(account, userId) {
 }
 
 export default function useSavedRecipes() {
+  const notifySave = useSaveNotification();
   const { user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
   const userId = user?.id;
@@ -94,6 +96,7 @@ export default function useSavedRecipes() {
         ? account.state.recipes.filter(item => item.id !== recipe.id)
         : [recipe, ...account.state.recipes.filter(item => item.id !== recipe.id)];
       update(account, { recipes });
+      notifySave?.(!wasSaved);
     } catch (error) {
       console.error("[saved_recipes] Update failed:", error?.message ?? "Unknown error", error?.code ?? "");
       update(account, { error: "Could not update your saved recipes. Please try again." });

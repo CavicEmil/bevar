@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 /* Background and text colours */
 const variants = {
   primary: "bg-spicy-berry text-white",
@@ -23,7 +25,7 @@ const paths = {
     "M7.87778 13.9889L9.44444 15.5556L15 10L9.44444 4.44444L7.87778 6.01111L10.7444 8.88889H0V11.1111H10.7444L7.87778 13.9889ZM17.7778 0H2.22222C1.63285 0 1.06762 0.234126 0.650874 0.650874C0.234126 1.06762 0 1.63285 0 2.22222V6.66667H2.22222V2.22222H17.7778V17.7778H2.22222V13.3333H0V17.7778C0 18.3671 0.234126 18.9324 0.650874 19.3491C1.06762 19.7659 1.63285 20 2.22222 20H17.7778C19 20 20 19 20 17.7778V2.22222C20 1 19 0 17.7778 0Z",
 };
 
-function ButtonIcon({ name, filled = false }) {
+export function ButtonIcon({ name, filled = false }) {
   if (name === "back" || name === "next") {
     return (
       <svg
@@ -106,8 +108,9 @@ export default function Button({
   disabled = false,
   className = "",
 }) {
+  const [bookmarkAnimation, setBookmarkAnimation] = useState(null);
   const iconElement = icon ? (
-    <ButtonIcon name={icon} filled={pressed} />
+    <ButtonIcon key={bookmarkAnimation?.id ?? 0} name={icon} filled={pressed} />
   ) : null;
 
   const textClasses =
@@ -118,7 +121,16 @@ export default function Button({
   return (
     <button
       type={type}
-      onClick={onClick}
+      onClick={(event) => {
+        if (icon === "saved") {
+          setBookmarkAnimation(previous => ({
+            id: (previous?.id ?? 0) + 1,
+            action: pressed ? "remove" : "save",
+          }));
+        }
+        onClick?.(event);
+      }}
+      data-bookmark-animation={icon === "saved" ? bookmarkAnimation?.action : undefined}
       disabled={disabled}
       aria-label={ariaLabel}
       aria-pressed={pressed}
