@@ -6,15 +6,36 @@ import {
   useNavigate,
   useSearchParams,
 } from "react-router";
+import { useEffect, useState } from "react";
 
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import Container from "./components/ui/Container";
 import { useChrome } from "./context/ChromeContext";
+import { useLoading } from "./context/LoadingContext";
+import Card from "./components/ui/Card";
+import WelcomeScreen from "./components/WelcomeScreen";
+
+const LOADING_MIN_MS = 1100;
 
 export default function Layout() {
   const { chromeless } = useChrome();
+  const { pending } = useLoading();
+  const [loadingVisible, setLoadingVisible] = useState(false);
   const { pathname, state } = useLocation();
+
+  useEffect(() => {
+    if (pending > 0) {
+      setLoadingVisible(true);          
+      return;
+    }
+
+    // pending just dropped to zero — hold the bar a beat before hiding
+    const timer = setTimeout(() => setLoadingVisible(false), LOADING_MIN_MS);
+    return () => clearTimeout(timer);
+  }, [pending]);
+
+  const showBar = loadingVisible && !chromeless;
 
   const recipeRoute = useMatch("/recipes/:id");
   const articleRoute = useMatch("/articles/:slug");
@@ -77,6 +98,8 @@ export default function Layout() {
     window.scrollTo(0, 0);
   }
 
+
+
   return (
     <div className="flex min-h-[100dvh] flex-col">
       {!chromeless && (
@@ -93,6 +116,11 @@ export default function Layout() {
           }
           onBack={handleBack}
         />
+      )}
+      {showBar && (
+        
+          <WelcomeScreen />
+        
       )}
 
       <Container className={recipeRoute && !isGuide ? "flex flex-1 flex-col" : ""}>

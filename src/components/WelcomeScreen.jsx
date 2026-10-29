@@ -13,7 +13,7 @@ export default function WelcomeScreen({ variant = "animated" }) {
         </>
       ) : (
         <>
-          <div className="w-[224px] max-w-full">
+          <div className="w-[100dvw] max-w-full">
             <BevarIntro />
           </div>
           <span role="status" className="sr-only">Loading Bevar…</span>

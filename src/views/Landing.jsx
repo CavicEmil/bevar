@@ -22,6 +22,7 @@ import filterbtn from "../assets/btn-filter.svg"
 
 
 const ONBOARDING_KEY = "bevar:seen-onboarding";
+const SPLASH_KEY = "bevar:splash-shown"; 
 const WELCOME_VARIANT = "animated"; // Set to "classic" for the original logo and spinner.
 const SPLASH_MIN_MS = WELCOME_VARIANT === "animated" ? 2200 : 1100;
 const LANDING_FILTERS = { fruitIds: [], categoryIds: [], difficultyIds: [], preparationTime: "all" };
@@ -43,11 +44,18 @@ function SearchResults({ heading, count, empty, children }) {
   );
 }
 
+function initialPhase() {
+  if (sessionStorage.getItem(SPLASH_KEY)) {
+    // already seen this session — no splash, straight to the right phase
+    return localStorage.getItem(ONBOARDING_KEY) ? "content" : "onboarding";
+  }
+  return "splash";
+}
 
 export default function Landing() {
   const { setChromeless } = useChrome();
   /* ---- phase machine: "splash" -> "onboarding" | "content" ---- */
-  const [phase, setPhase] = useState("splash");
+  const [phase, setPhase] = useState(initialPhase);
   const [splashDone, setSplashDone] = useState(false);
   const [query, setQuery] = useState("");
   const [applied, setApplied] = useState(LANDING_FILTERS);
@@ -89,6 +97,7 @@ export default function Landing() {
   }, [articles, term]);  */
 
   const isSearching = term.length > 0;
+  
 
   function handleApply(filters) {
     setApplied(filters);
@@ -158,10 +167,12 @@ export default function Landing() {
     ];
   }, [visibleRecipes, visibleArticles, term]);
 
+
   /* splash: minimum display time, but never longer than data needs */
   useEffect(() => {
     if (!splashDone && dataReady) {
       const timer = setTimeout(() => {
+        sessionStorage.setItem(SPLASH_KEY, "true");
         setPhase(localStorage.getItem(ONBOARDING_KEY) ? "content" : "onboarding");
       }, SPLASH_MIN_MS);
       return () => clearTimeout(timer);
@@ -308,9 +319,9 @@ export default function Landing() {
                 </Link>
               </div>
 
-              <Carousel className="home-recipes">
+              <Carousel className="home-recipes" >
                 {topRecipes.map((recipe) => (
-                  <RecipeCard key={recipe.id} recipe={recipe} variant="hero" />
+                  <RecipeCard key={recipe.id} recipe={recipe} variant="hero" className=" w-[50%]"/>
                 ))}
               </Carousel>
 
@@ -320,7 +331,7 @@ export default function Landing() {
                 {filterOptionsLoading && (
                   <p role="status" className="mt-[12px] text-small">Loading methods…</p>
                 )}
-                {!filterOptions.categories && (
+                {!filterOptionsLoading && !filterOptions?.categories && (
                   <p role="alert" className="mt-[12px] text-small">
                     Methods couldn’t be loaded. Please refresh to try again.
                   </p>
@@ -331,7 +342,7 @@ export default function Landing() {
                   role="region"
                   aria-label="Method categories, scroll horizontally"
                 >
-                  {(filterOptions.categories ?? []).map((category) => (
+                  {(filterOptions?.categories ?? []).map((category) => (
                     <Link
                       key={category.id}
                       to={`/recipes?categoryIds=${encodeURIComponent(category.id)}`}

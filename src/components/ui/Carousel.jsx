@@ -17,6 +17,10 @@ export default function Carousel({
     ? Math.min(itemsPerSlide, Math.max(items.length, 1))
     : 1;
 
+  const peekPadding = visibleItems === 1
+    ? "calc(var(--spacing-related) + var(--carousel-single-peek, 2.5rem))"
+    : "var(--spacing-page)";
+
   function scrollTo(left) {
     const viewport = viewportRef.current;
     if (!viewport) return;
@@ -141,8 +145,9 @@ export default function Carousel({
         onLostPointerCapture={finishDrag}
         onClickCapture={handleClickCapture}
         onDragStart={event => event.preventDefault()}
-        style={{ "--carousel-items": visibleItems }}
-        className="flex cursor-grab select-none gap-related overflow-x-auto overscroll-x-contain snap-x snap-mandatory py-related -my-related pr-[var(--carousel-peek,var(--spacing-page))] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-spicy-berry"
+        style={{ "--carousel-items": visibleItems,  "--carousel-peek-default": peekPadding, }}
+        className="flex cursor-grab select-none gap-related overflow-x-auto overscroll-x-contain snap-x snap-mandatory py-related -my-related 
+        pr-[var(--carousel-peek,var(--carousel-peek-default))] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-spicy-berry"
       >
         {items.map((item, index) => (
           <div

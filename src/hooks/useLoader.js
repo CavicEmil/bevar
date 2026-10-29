@@ -1,45 +1,22 @@
+// hooks/useLoader.js
 import { useEffect, useState } from "react";
+import { useLoading } from "../context/LoadingContext";
 
-export function useLoader(fetcher, deps = []) {
-  const [data, setData] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+export function useLoader(fetcher) {
+  const { start, end } = useLoading();
+  const [state, setState] = useState({ data: null, loading: true, error: null });
 
   useEffect(() => {
-    // ignore the result if this loader was superseded or unmounted
-    let stale = false;
-
-    setLoading(true);
-    setError(null);
+    let cancelled = false;
+    start();                                  // ← report to the global counter
 
     fetcher()
-      .then((result) => {
-        if (!stale) {
-          setData(result);
-          setLoading(false);
-        }
-      })
-      .catch((err) => {
-        console.error("useLoader caught:", err);
-        if (!stale) {
-          setError(err);
-          setLoading(false);
-        }
-      });
+      .then((data) => { if (!cancelled) setState({ data, loading: false, error: null }); })
+      .catch((error) => { if (!cancelled) setState({ data: null, loading: false, error }); })
+      .finally(() => { if (!cancelled) end(); });   // ← always release, even on error
 
-    return () => {
-      stale = true;
-    };
-  }, deps); // eslint-disable-line react-hooks/exhaustive-deps
+    return () => { cancelled = true; end(); };      // ← and on unmount/cancel
+  }, []);
 
-  return { data, loading, error };
+  return state;
 }
-
-/* how to use:
-
-const { data: recipes, loading, error } = useLoader(
-  () => getRecipes(sort.column, sort.ascending),
-  [sortKey]
-);
-
-*/
