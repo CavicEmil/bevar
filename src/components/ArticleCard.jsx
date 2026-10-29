@@ -64,7 +64,7 @@ export default function ArticleCard({
           content="Read the article ->"
           variant="primary"
           onClick={() => navigate(detailUrl, { viewTransition: true })}
-          className="navigation-card-trigger self-center w-90 m-card-sm"
+          className="navigation-card-trigger self-center w-full m-card-sm"
         />
       ) : (
         <Link
