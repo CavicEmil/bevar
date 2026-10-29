@@ -3,6 +3,7 @@ import { useEffect, useMemo, useSyncExternalStore } from "react";
 import { useNavigate } from "react-router";
 import { supabase } from "../api/client";
 import { useAuth } from "../context/AuthContext";
+import { useSaveNotification } from "../context/SaveNotificationContext";
 
 const emptyState = {
   articles: [],
@@ -74,6 +75,7 @@ async function load(account, userId) {
 }
 
 export default function useSavedArticles() {
+  const notifySave = useSaveNotification();
   const { user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
   const userId = user?.id;
@@ -155,6 +157,7 @@ export default function useSavedArticles() {
           ];
 
       update(account, { articles });
+      notifySave?.(!wasSaved);
     } catch (error) {
       console.error(
         "[saved_articles] Update failed:",
