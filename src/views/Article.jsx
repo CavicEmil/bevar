@@ -8,6 +8,7 @@ import Card from "../components/ui/Card";
 import Carousel from "../components/ui/Carousel";
 import Media from "../components/ui/Media";
 import ArticleCard from "../components/ArticleCard";
+import RelatedRecipeCard from "../components/RelatedRecipeCard";
 import { getPublicUrl } from "../api/media";
 
 /* Read the existing HTML sections without duplicating their content. */
@@ -146,7 +147,7 @@ export default function Article() {
         {relatedRecipe && (
           <section
             aria-labelledby="related-recipe"
-            className="flex flex-col gap-related"
+            className="mt-section flex flex-col gap-section"
           >
             <h2
               id="related-recipe"
@@ -155,50 +156,10 @@ export default function Article() {
               Related recipe
             </h2>
 
-            <Link
-              to={`/recipes/${relatedRecipe.id}`}
-              state={{
-                recipeReturnTo: `/articles/${article.slug}`,
-              }}
-              className="
-                flex min-w-0 items-center gap-related
-                rounded-card bg-white p-card-sm
-              "
-            >
-              <div className="w-1/3 shrink-0">
-                <Media
-                  type="image"
-                  src={getPublicUrl(
-                    "recipe-images",
-                    relatedRecipe.hero_image_path
-                  )}
-                  alt={relatedRecipe.title}
-                  ratio="1/1"
-                />
-              </div>
-
-              <div className="flex min-w-0 flex-1 flex-col gap-objects">
-                <p className="text-small text-spicy-berry">
-                  {[
-                    relatedRecipe.prep_time_minutes != null
-                      ? `${relatedRecipe.prep_time_minutes} min`
-                      : null,
-                    relatedRecipe.difficulty?.difficulty,
-                    relatedRecipe.category?.category,
-                  ]
-                    .filter(Boolean)
-                    .join(" · ")}
-                </p>
-
-                <h3 className="text-[16px] font-semibold">
-                  {relatedRecipe.title}
-                </h3>
-
-                <span className="text-small text-spicy-berry">
-                  View recipe →
-                </span>
-              </div>
-            </Link>
+            <RelatedRecipeCard
+              recipe={relatedRecipe}
+              returnTo={`/articles/${article.slug}`}
+            />
           </section>
         )}
 
