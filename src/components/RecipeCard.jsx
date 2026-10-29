@@ -17,7 +17,7 @@ export default function RecipeCard({
   variant = "tile",
   isSaved = false,
   onToggleSave,
-  outlinedTags = false,
+  outlinedTags = true,
   recipeBasePath = "/recipes",
 }) {
   const navigate = useNavigate();
@@ -80,6 +80,7 @@ export default function RecipeCard({
           <span className="inline-flex items-center gap-[10px] text-rhodophobia">
             {isHero && <span aria-hidden="true">·</span>}
             <Tag
+              iconColor={outlinedTags ? "currentColor" : undefined}
               icon={getPublicUrl(
                 "category-images",
                 recipe.category?.category_image_path,
