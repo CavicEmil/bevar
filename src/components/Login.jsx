@@ -132,12 +132,6 @@ export default function Login() {
         >
           No account yet? Sign up
         </Link>
-        <Link
-          to="/"
-          className="flex min-h-[48px] w-full items-center justify-center rounded-button--icons p-button text-body font-semibold text-dark-humor focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-spicy-berry"
-        >
-          Keep exploring as a guest
-        </Link>
       </div>
     </form>
   );

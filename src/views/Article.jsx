@@ -5,6 +5,7 @@ import DOMPurify from "dompurify";
 import Button from "../components/ui/Button";
 import useSavedArticles from "../hooks/useSavedArticles";
 import Card from "../components/ui/Card";
+import Carousel from "../components/ui/Carousel";
 import Media from "../components/ui/Media";
 import ArticleCard from "../components/ArticleCard";
 import { getPublicUrl } from "../api/media";
@@ -36,12 +37,12 @@ function prepareContent(content) {
   };
 }
 
-function HtmlContent({ html }) {
+function HtmlContent({ html, className = "" }) {
   if (!html) return null;
 
   return (
     <div
-      className="min-w-0 break-words"
+      className={`min-w-0 break-words ${className}`}
       dangerouslySetInnerHTML={{ __html: html }}
     />
   );
@@ -74,11 +75,11 @@ export default function Article() {
         Number(b.article_category === article.article_category) -
         Number(a.article_category === article.article_category)
     )
-    .slice(0, 2);
+    .slice(0, 5);
 
   return (
     <Card
-      variant="default"
+      variant="viewbg"
       className="
         article-card-destination
         flex min-w-0 flex-col gap-section
@@ -131,7 +132,10 @@ export default function Article() {
         )}
 
         <HtmlContent html={content.reminder} />
-        <HtmlContent html={content.body} />
+        <HtmlContent
+          html={content.body}
+          className="rounded-card bg-white p-card-lg"
+        />
 
         {!article.content?.trim() && (
           <p className="text-body">
@@ -142,10 +146,7 @@ export default function Article() {
         {relatedRecipe && (
           <section
             aria-labelledby="related-recipe"
-            className="
-              flex flex-col gap-related
-              rounded-card bg-poplar-pink p-card-sm
-            "
+            className="flex flex-col gap-related"
           >
             <h2
               id="related-recipe"
@@ -206,27 +207,37 @@ export default function Article() {
 
       {relatedArticles.length > 0 && (
         <section
-          aria-labelledby="keep-learning"
+          aria-labelledby="more-articles"
           className="flex flex-col gap-related"
         >
-          <h2
-            id="keep-learning"
-            className="text-[16px] font-semibold"
-          >
-            Keep learning
-          </h2>
-
-          <div className="rounded-card bg-poplar-pink p-card-sm">
-            <div className="grid min-w-0 grid-cols-2 gap-related">
-              {relatedArticles.map((item) => (
-                <ArticleCard
-                  key={item.id}
-                  article={item}
-                  variant="tile"
-                />
-              ))}
-            </div>
+          <div className="flex items-center justify-between gap-related">
+            <h2
+              id="more-articles"
+              className="text-[16px] font-semibold"
+            >
+              More articles
+            </h2>
+            <Link
+              to="/blog"
+              className="w-fit text-small text-spicy-berry hover:text-spicy-berry"
+            >
+              All articles →
+            </Link>
           </div>
+
+          <Carousel
+            ariaLabel="More articles"
+            itemsPerSlide={2}
+            className="home-articles"
+          >
+            {relatedArticles.map((item) => (
+              <ArticleCard
+                key={item.id}
+                article={item}
+                variant="tile"
+              />
+            ))}
+          </Carousel>
         </section>
       )}
     </Card>
