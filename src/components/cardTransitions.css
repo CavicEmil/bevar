@@ -1,3 +1,30 @@
+.card-save-button {
+  min-height: 0;
+  padding: 8px;
+}
+
+.card-save-button--hero {
+  top: 24px;
+  right: 24px;
+}
+
+.card-save-button--tile {
+  top: 20px;
+  right: 20px;
+  padding: 5px;
+  border-radius: 9px;
+}
+
+.card-save-button--tile svg {
+  width: 16px;
+  height: 16px;
+}
+
+.card-save-button--tile span[aria-hidden="true"] {
+  width: 18px;
+  height: 18px;
+}
+
 .recipe-card-tags > span:first-child,
 .recipe-card-tags > span > span:last-child {
   border: 1px solid var(--color-spicy-berry);

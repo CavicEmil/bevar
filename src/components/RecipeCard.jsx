@@ -118,7 +118,7 @@ export default function RecipeCard({
             event.stopPropagation();
             onToggleSave?.(recipe.id);
           }}
-          className="!min-h-0 !p-[8px] absolute right-[16px] top-[16px] self-end text-rhodophobia hover:text-spicy-berry"
+          className={`card-save-button ${isHero ? "card-save-button--hero" : "card-save-button--tile"} absolute self-end text-rhodophobia hover:text-spicy-berry`}
         />
       </Card>
     </div>

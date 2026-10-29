@@ -49,26 +49,7 @@
   flex-shrink: 0;
 }
 
-.article-card--tile > button[aria-pressed] {
-  top: 20px;
-  right: 20px;
-  padding: 5px !important;
-  border-radius: 9px;
-}
-
-.article-card--tile > button[aria-pressed] svg {
-  width: 16px;
-  height: 16px;
-}
-
-.article-card--tile > button[aria-pressed] span[aria-hidden="true"] {
-  width: 18px;
-  height: 18px;
-}
-
 .article-card--tile > :first-child { max-height: 120px; }
-
-.article-card--hero > button[aria-pressed] { top: 24px; right: 24px; }
 
 .article-card--hero > div.flex.flex-wrap > :first-child {
   color: var(--color-spicy-berry, #cc2e5f);
