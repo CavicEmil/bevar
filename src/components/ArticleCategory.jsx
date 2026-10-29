@@ -33,6 +33,28 @@ const variants = {
   },
 };
 
+export function ArticleCategoryIcon({ topic, size = 24 }) {
+  const category = Object.values(variants).find((item) => item.title === topic);
+  if (!category) return null;
+
+  return (
+    <svg
+      aria-hidden="true"
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className="shrink-0 text-spicy-berry"
+    >
+      <path d={category.iconPath} />
+    </svg>
+  );
+}
+
 export default function ArticleCategory({
   variant = "methods",
   onClick,
@@ -57,20 +79,7 @@ export default function ArticleCategory({
         ${className}
       `}
     >
-      <svg
-        aria-hidden="true"
-        width="24"
-        height="24"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.8"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        className="shrink-0 text-spicy-berry"
-      >
-        <path d={category.iconPath} />
-      </svg>
+      <ArticleCategoryIcon topic={category.title} />
 
       <span className="text-[14px] leading-[1.4] font-semibold">
         {category.title}
