@@ -1,8 +1,8 @@
 import { useLayoutEffect } from "react";
 import useSavedArticles from "../hooks/useSavedArticles";
-import ArticleCard from "./ArticleCard";
-import Card from "./ui/Card";
-import Button from "./ui/Button";
+import ArticleCard from "../components/ArticleCard";
+import Card from "../components/ui/Card";
+import Button from "../components/ui/Button";
 
 export default function MyArticles() {
   const saved = useSavedArticles();
