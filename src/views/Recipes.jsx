@@ -1,5 +1,8 @@
 import { useEffect, useState, useMemo } from "react";
 import { useSearchParams } from "react-router";
+import { useLoader } from "../hooks/useLoader";
+import { getFruits, getCategories, getDifficulties } from "../api/reference";
+import ActiveFilters from "../components/ActiveFilters";
 import Heading from "../components/ui/Heading";
 import Button from "../components/ui/Button";
 import Sorting from "../components/Sorting";
@@ -22,6 +25,14 @@ const SORTS = {
 };
 
 export default function Recipes() {
+  const { data: filterOptions } = useLoader(() =>
+  Promise.all([getFruits(), getCategories(), getDifficulties()]).then(
+    ([fruits, categories, difficulties]) => ({
+      fruits: fruits ?? [],
+      categories: categories ?? [],
+      difficulties: difficulties ?? [],
+    })
+  ));
   const saved = useSavedRecipes();
   const [loadedRecipes, setLoadedRecipes] = useState([]);
   const [sort, setSort] = useState("recommended");
@@ -124,6 +135,30 @@ export default function Recipes() {
     setFilterOpen(false);
   }
 
+  function handleRemoveFilter(field, id) {
+    const next = new URLSearchParams(searchParams);
+
+    if (field === "preparationTime") {
+      next.delete("time");
+    } else {
+      const remaining = (next.get(field) ?? "")
+        .split(",")
+        .filter(Boolean)
+        .filter((value) => value !== id);
+
+      if (remaining.length) next.set(field, remaining.join(","));
+      else next.delete(field);
+    }
+
+    setSearchParams(next);   // effect refetches with the reduced filter
+  }
+
+  function handleClearFilters() {
+    const next = new URLSearchParams(searchParams);
+    ["fruitIds", "categoryIds", "difficultyIds", "time"].forEach((key) => next.delete(key));
+    setSearchParams(next);
+  }
+
   return (
     <Card className="min-h-screen p-4" variant="viewbg"
     >
@@ -140,8 +175,8 @@ export default function Recipes() {
 
         <button
           type="button"
-          onClick={() => setFilterOpen(true)}
-          aria-label="Open filters"
+          onClick={() => setFilterOpen((open) => !open)}
+          aria-label={filterOpen ? "Close filters" : "Open filters"}
           aria-expanded={filterOpen}
           className="w-1/7 shrink-0 cursor-pointer rounded-button--icons bg-white
                     focus-visible:outline-2 focus-visible:outline-offset-2
@@ -153,30 +188,20 @@ export default function Recipes() {
       <div className="px-4 pb-4">
         <Sorting value={sort} onChange={setSort} />
       </div>
-      {filterOpen && (
-        <div
-          className="fixed inset-0 z-40 flex flex-col"
-          role="dialog"
-          aria-modal="true"
-          aria-label="Filter recipes"
-          onKeyDown={(e) => e.key === "Escape" && setFilterOpen(false)}
-        >
-          {/* backdrop: click to dismiss, focusable for keyboard users */}
-          <button
-            type="button"
-            aria-label="Close filters"
-            onClick={() => setFilterOpen(false)}
-            className="min-h-0 flex-1 cursor-pointer bg-dark-humor/40"
-          />
 
-          {/* sheet: content-sized, anchored to the bottom, scrollable if tall */}
-          <div className="max-h-[85dvh] overflow-y-auto overscroll-contain">
-            <FilterCard
-              initialFilters={initialFilters}
-              onApply={handleApply}
-            />
-          </div>
-        </div>
+      {/* ---------- ACTIVE FILTERS — chips under the search row ---------- */}
+      <ActiveFilters
+        filters={initialFilters}
+        options={filterOptions}
+        onRemove={handleRemoveFilter}
+        onClear={handleClearFilters}
+      />
+      {/* ---------- INLINE FILTER FORM — pushes content down ---------- */}
+      {filterOpen && (
+        <FilterCard
+          initialFilters={initialFilters}
+          onApply={handleApply}
+        />
       )}
 
       <Heading
