@@ -48,9 +48,9 @@ export default function RecipeCard({
           src={getPublicUrl("recipe-images", recipe.hero_image_path)}
           alt={recipe.title}
           ratio={isHero ? "16/9" : "3/2"}
-          fit={isHero ? "contain" : "cover"}
+          fit="contain"
           priority={isHero}
-          className="p-card-sm"
+          className={isHero ? "p-card-sm" : "h-[96px] shrink-0 [&>img]:p-[8px]"}
         />
 
         {!isHero && (
