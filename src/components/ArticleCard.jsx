@@ -64,7 +64,7 @@ export default function ArticleCard({
           content="Read the article ->"
           variant="primary"
           onClick={() => navigate(detailUrl, { viewTransition: true })}
-          className="navigation-card-trigger self-center w-90 m-card-sm"
+          className="navigation-card-trigger self-center w-full m-card-sm"
         />
       ) : (
         <Link
@@ -91,7 +91,7 @@ export default function ArticleCard({
           event.stopPropagation();
           saved.toggle(article);
         }}
-        className="!min-h-0 !p-[8px] absolute right-[16px] top-[16px] self-end text-dark-humor hover:text-spicy-berry"
+        className={`card-save-button ${isHero ? "card-save-button--hero" : "card-save-button--tile"} absolute self-end text-dark-humor hover:text-spicy-berry`}
       />
 
       {saved.error && <p role="alert" className="text-small text-spicy-berry">{saved.error}</p>}

@@ -17,7 +17,7 @@ export default function RecipeCard({
   variant = "tile",
   isSaved = false,
   onToggleSave,
-  outlinedTags = false,
+  outlinedTags = true,
   recipeBasePath = "/recipes",
 }) {
   const navigate = useNavigate();
@@ -80,11 +80,12 @@ export default function RecipeCard({
           <span className="inline-flex items-center gap-[10px] text-rhodophobia">
             {isHero && <span aria-hidden="true">·</span>}
             <Tag
+              iconColor={outlinedTags ? "currentColor" : undefined}
               icon={getPublicUrl(
                 "category-images",
                 recipe.category?.category_image_path,
               )}
-              label={recipe.method?.method ?? recipe.category?.category}
+              label={recipe.category?.category}
             />
           </span>
         </div>
@@ -117,7 +118,7 @@ export default function RecipeCard({
             event.stopPropagation();
             onToggleSave?.(recipe.id);
           }}
-          className="!min-h-0 !p-[8px] absolute right-[16px] top-[16px] self-end text-rhodophobia hover:text-spicy-berry"
+          className={`card-save-button ${isHero ? "card-save-button--hero" : "card-save-button--tile"} absolute self-end text-rhodophobia hover:text-spicy-berry`}
         />
       </Card>
     </div>
