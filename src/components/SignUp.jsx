@@ -188,21 +188,6 @@ export default function SignUp() {
         >
           Already have an account? Log in
         </Link>
-
-        <Link
-          to="/"
-          className="
-            flex min-h-[48px] w-full
-            items-center justify-center p-button
-            text-center text-body font-semibold
-            text-dark-humor no-underline
-            focus-visible:outline-2
-            focus-visible:outline-offset-2
-            focus-visible:outline-spicy-berry
-          "
-        >
-          Keep exploring as a guest
-        </Link>
       </div>
     </form>
   );
