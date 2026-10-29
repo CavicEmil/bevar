@@ -16,6 +16,36 @@ import Button from "./ui/Button";
 import Chip from "./ui/Chip";
 import Heading from "./ui/Heading";
 
+function RoundCheckbox({ checked, onChange, disabled = false }) {
+  return (
+    <span className="relative flex size-[20px] shrink-0">
+      <input
+        type="checkbox"
+        checked={checked}
+        disabled={disabled}
+        onChange={onChange}
+        className="peer sr-only"
+      />
+      <span
+        aria-hidden="true"
+        className={`flex size-[20px] items-center justify-center rounded-full border peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-spicy-berry peer-disabled:opacity-50 ${checked ? "border-spicy-berry bg-spicy-berry" : "border-dark-humor bg-transparent"}`}
+      >
+        {checked && (
+          <svg width="11" height="8" viewBox="0 0 11 8" fill="none">
+            <path
+              d="M0.850006 3.84998L3.85001 6.84998L9.65001 0.849976"
+              stroke="white"
+              strokeWidth="1.7"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        )}
+      </span>
+    </span>
+  );
+}
+
 export default function Onboarding({
   onComplete,
   initialPreferences,
@@ -184,11 +214,9 @@ export default function Onboarding({
               >
                 <span>I’m here to explore. Select all</span>
 
-                <input
-                  type="checkbox"
+                <RoundCheckbox
                   checked={allFruits}
                   disabled={!options.fruits.length}
-                  className="size-5 shrink-0 accent-spicy-berry"
                   onChange={() =>
                     setPreferences((current) => ({
                       ...current,
@@ -256,10 +284,8 @@ export default function Onboarding({
               >
                 <span>I don’t know yet.</span>
 
-                <input
-                  type="checkbox"
+                <RoundCheckbox
                   checked={!preferences.categoryIds.length}
-                  className="size-5 shrink-0 accent-spicy-berry"
                   onChange={() =>
                     setPreferences((current) => ({
                       ...current,

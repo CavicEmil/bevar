@@ -182,7 +182,16 @@ export default function Chip({
           <span className="flex items-center justify-between gap-[10px]">
             <span className="flex size-[24px] items-center justify-center">
               {displayIcon && (
-                <img src={displayIcon} alt="" className="size-[24px] object-contain" />
+                <span
+                  aria-hidden="true"
+                  className="block size-[24px] bg-spicy-berry"
+                  style={{
+                    maskImage: `url("${displayIcon}")`,
+                    maskSize: "contain",
+                    maskRepeat: "no-repeat",
+                    maskPosition: "center",
+                  }}
+                />
               )}
             </span>
 
@@ -190,9 +199,9 @@ export default function Chip({
           </span>
 
           <span className="flex flex-col gap-1">
-            <span className="text-body font-medium">{displayLabel}</span>
+            <span className="text-body font-semibold">{displayLabel}</span>
             {displayDescription && (
-              <span className="text-body">{displayDescription}</span>
+              <span className="text-body font-normal">{displayDescription}</span>
             )}
           </span>
         </span>
