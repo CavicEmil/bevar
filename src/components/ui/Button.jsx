@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 /* Background and text colours */
 const variants = {
   primary: "bg-spicy-berry text-white",
@@ -106,8 +108,9 @@ export default function Button({
   disabled = false,
   className = "",
 }) {
+  const [bookmarkAnimation, setBookmarkAnimation] = useState(null);
   const iconElement = icon ? (
-    <ButtonIcon name={icon} filled={pressed} />
+    <ButtonIcon key={bookmarkAnimation?.id ?? 0} name={icon} filled={pressed} />
   ) : null;
 
   const textClasses =
@@ -118,7 +121,16 @@ export default function Button({
   return (
     <button
       type={type}
-      onClick={onClick}
+      onClick={(event) => {
+        if (icon === "saved") {
+          setBookmarkAnimation(previous => ({
+            id: (previous?.id ?? 0) + 1,
+            action: pressed ? "remove" : "save",
+          }));
+        }
+        onClick?.(event);
+      }}
+      data-bookmark-animation={icon === "saved" ? bookmarkAnimation?.action : undefined}
       disabled={disabled}
       aria-label={ariaLabel}
       aria-pressed={pressed}
