@@ -88,7 +88,7 @@ export default function Header({
   }
 
   return (
-    <header className="w-full text-white">
+    <header className="sticky top-0 z-50 w-full shrink-0 bg-dark-humor pt-[env(safe-area-inset-top,0px)] text-white">
       <div className="flex min-h-20 items-center gap-related px-page py-4 sm:py-5">
         {variant === "logo" && !collectionRoute ? (
           <Link
