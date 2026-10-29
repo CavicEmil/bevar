@@ -61,7 +61,7 @@ export default function ArticleCard({
       {/* hero: primary button; tile: Tag-styled link — same slot, different affordance */}
       {isHero ? (
         <Button
-          content="Read the article ->"
+          content="Read the article →"
           variant="primary"
           onClick={() => navigate(detailUrl, { viewTransition: true })}
           className="navigation-card-trigger self-center w-full m-card-sm"
@@ -72,7 +72,7 @@ export default function ArticleCard({
           viewTransition
           className="pl-card-sm w-fit text-spicy-berry text-sm pb-4"
         >
-          Read Article -&gt;
+          Read Article →
         </Link>
       )}
 
