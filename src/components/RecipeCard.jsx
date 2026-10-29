@@ -39,8 +39,8 @@ export default function RecipeCard({
       <Card
         variant="default"
         size={isHero ? "lg" : "sm"}
-        className={`group relative flex h-full flex-col gap-card-sm pt-4 px-4 ${
-          isHero ? "" : "transition-shadow hover:shadow-md"
+        className={`group relative flex h-full flex-col gap-card-sm ${
+          isHero ? "pt-4 px-4" : "p-[12px]! transition-shadow hover:shadow-md"
         }`}
       >
         <Media
@@ -66,10 +66,10 @@ export default function RecipeCard({
         <Heading
           variant={isHero ? 1 : 2}
           content={recipe.title}
-          className="pl-card-sm text-dark-humor"
+          className={`${isHero ? "pl-card-sm" : ""} text-dark-humor`}
         />
 
-        <div className={`flex flex-wrap items-center gap-x-[10px] gap-y-[5px] m-card-sm ${outlinedTags ? `recipe-card-tags ${isHero ? "recipe-hero-tags" : ""}` : ""}`}>
+        <div className={`flex flex-wrap items-center gap-x-[10px] ${isHero ? "m-card-sm gap-y-[5px]" : "recipe-tile-tags mt-auto gap-y-[6px]"} ${outlinedTags ? `recipe-card-tags ${isHero ? "recipe-hero-tags" : ""}` : ""}`}>
           <Tag label={`${recipe.prep_time_minutes} min`} />
 
           <span className="inline-flex items-center gap-[10px] text-rhodophobia">

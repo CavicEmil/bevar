@@ -42,6 +42,16 @@
   padding: 6px 10px;
 }
 
+.recipe-tile-tags > span,
+.recipe-tile-tags > span > span:last-child {
+  max-width: 100%;
+}
+
+.recipe-tile-tags > span > span:last-child {
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
 .navigation-card {
   transform-origin: center;
   transition: transform 220ms cubic-bezier(0.22, 1.4, 0.36, 1);
