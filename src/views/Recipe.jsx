@@ -10,17 +10,18 @@ import Button from "../components/ui/Button";
 import IngredientCalculatorButton from "../components/ui/IngredientCalculatorButton";
 import StepGuide from "../components/StepGuide";
 import useSavedRecipes from "../hooks/useSavedRecipes";
+import "./Recipe.css";
 
 const formatAmount = amount => new Intl.NumberFormat("en-GB", { maximumSignificantDigits: 4 }).format(Number(amount));
 const ingredientAmount = row => row.unit?.trim().toLowerCase() === "to taste"
   ? row.unit : `${formatAmount(row.amount)} ${row.unit}`;
 
-export default function Recipe({ outlinedTags = false }) {
+export default function Recipe({ outlinedTags = true }) {
   const recipe = useLoaderData();
   return <RecipeContent key={recipe.id} recipe={recipe} outlinedTags={outlinedTags} />;
 }
 
-export function RecipeContent({ recipe, outlinedTags = false }) {
+export function RecipeContent({ recipe, outlinedTags = true }) {
   const saved = useSavedRecipes();
   const isSaved = saved.isSaved(recipe.id);
   const isSaving = saved.isLoading || saved.pendingIds.has(recipe.id);
@@ -116,7 +117,7 @@ export function RecipeContent({ recipe, outlinedTags = false }) {
                 {saveError}
               </p>
             )}
-            <div className={`flex flex-wrap items-center gap-x-[12px] gap-y-[8px] ${outlinedTags ? "marta-recipe-detail-tags" : ""}`} aria-label="Recipe details">
+            <div className={`flex flex-wrap items-center gap-x-[12px] gap-y-[8px] ${outlinedTags ? "recipe-detail-tags" : ""}`} aria-label="Recipe details">
               {[
                 recipe.prep_time_minutes != null && {
                   key: "time",
@@ -135,7 +136,7 @@ export function RecipeContent({ recipe, outlinedTags = false }) {
               ].filter(Boolean).map((tag, index) => (
                 <span key={tag.key} className="inline-flex items-center gap-[12px]">
                   {index > 0 && <span aria-hidden="true" className="text-[14px] leading-none text-rhodophobia/50">·</span>}
-                  <Tag icon={tag.icon} label={tag.label} />
+                  <Tag icon={tag.icon} label={tag.label} iconColor={outlinedTags ? "var(--color-spicy-berry)" : undefined} />
                 </span>
               ))}
             </div>

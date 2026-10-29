@@ -1,6 +1,5 @@
 import { Link } from "react-router";
 import Recipe from "../Recipe";
-import "./RecipePreview.css";
 
 export default function RecipePreview() {
   return (
