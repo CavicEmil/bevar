@@ -85,7 +85,7 @@ export default function RecipeCard({
                 "category-images",
                 recipe.category?.category_image_path,
               )}
-              label={recipe.method?.method ?? recipe.category?.category}
+              label={recipe.category?.category}
             />
           </span>
         </div>
