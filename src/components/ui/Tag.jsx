@@ -1,6 +1,6 @@
 /* was necessary for Recipe & ArticleCard */
 
-export default function Tag({ icon, label, iconColor }) {
+export default function Tag({ icon, label, iconColor = "var(--color-spicy-berry)" }) {
   return (
     <span className="inline-flex items-center gap-[5px] text-small text-dark-humor">
       {icon && iconColor ? (

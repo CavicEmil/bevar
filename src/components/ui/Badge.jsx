@@ -58,7 +58,18 @@ export default function Badge({
 
   const content = (
     <>
-      {image ? (
+      {image && type === "category" ? (
+        <span
+          aria-hidden="true"
+          className="block size-[14px] shrink-0 bg-spicy-berry"
+          style={{
+            maskImage: `url("${image}")`,
+            maskSize: "contain",
+            maskRepeat: "no-repeat",
+            maskPosition: "center",
+          }}
+        />
+      ) : image ? (
         <img
           src={image}
           alt=""
