@@ -144,14 +144,14 @@ export default function Blog() {
     >
       {showResults ? (
         <>
-          <h1 className="text-[24px] leading-[1.4] font-semibold">
-            All Articles
-          </h1>
-
           <ArticleSearch
             value={searchValues}
             onChange={openResults}
           />
+
+          <h1 className="text-[24px] leading-[1.4] font-semibold">
+            All Articles
+          </h1>
 
           <p role="status" className="text-small">
             {results.length}{" "}

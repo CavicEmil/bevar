@@ -1,5 +1,5 @@
 import { useEffect, useState, useMemo } from "react";
-import { useLoaderData, useSearchParams } from "react-router";
+import { useSearchParams } from "react-router";
 import Heading from "../components/ui/Heading";
 import Button from "../components/ui/Button";
 import Sorting from "../components/Sorting";
@@ -23,8 +23,6 @@ const SORTS = {
 
 export default function Recipes() {
   const saved = useSavedRecipes();
-/*   const loaderData = useLoaderData();
-  const routeRecipes = Array.isArray(loaderData) ? loaderData : null; */
   const [loadedRecipes, setLoadedRecipes] = useState([]);
   const [sort, setSort] = useState("recommended");
   const [loading, setLoading] = useState(true);
@@ -113,10 +111,6 @@ export default function Recipes() {
   const recipes = loadedRecipes;
   const isLoading = loading;
 
- /*  const [hero, ...tiles] = recipes ?? []; */
-  const [hero, ...tiles] = query.trim() ? [] : visibleRecipes;
-  const allTiles = query.trim() ? visibleRecipes : tiles;
-
   function handleApply(filters) {
     const next = new URLSearchParams();
 
@@ -156,6 +150,9 @@ export default function Recipes() {
           <img src={filterbtn} alt="" aria-hidden="true" className="mx-auto h-full w-auto" />
         </button>
       </div>
+      <div className="px-4 pb-4">
+        <Sorting value={sort} onChange={setSort} />
+      </div>
       {filterOpen && (
         <div
           className="fixed inset-0 z-40 flex flex-col"
@@ -186,12 +183,8 @@ export default function Recipes() {
         level={1}
         variant={1}
         content="What will you preserve?"
-        className="text-dark-humor pt-4"
+        className="mb-section text-dark-humor pt-4"
       />
-
-      <div className="relative p-4">
-        <Sorting value={sort} onChange={setSort} />
-      </div>
 
       {saved.error && (
         <div className="mb-section flex flex-col items-start gap-related">
@@ -214,14 +207,7 @@ export default function Recipes() {
         <p className="text-body">No recipes available yet.</p>
       ) : (
         <div className="grid grid-cols-2 gap-[16px]">
-          {hero && (
-            <div className="col-span-2">
-              <RecipeCard recipe={hero} variant="hero"
-                isSaved={saved.isSaved(hero.id)} onToggleSave={() => saved.toggle(hero)} />
-            </div>
-          )}
-
-          {allTiles.map((recipe) => (
+          {visibleRecipes.map((recipe) => (
             <RecipeCard key={recipe.id} recipe={recipe} variant="tile"
               isSaved={saved.isSaved(recipe.id)} onToggleSave={() => saved.toggle(recipe)} />
           ))}

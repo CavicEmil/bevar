@@ -1,9 +1,10 @@
-import { useEffect, useId, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import { getArticles } from "../api/article";
 import { getFruits, getCategories } from "../api/reference";
 
 import SearchBar from "./SearchBar";
+import Sorting from "./Sorting";
 import Badge from "./ui/Badge";
 import Button from "./ui/Button";
 
@@ -14,6 +15,12 @@ const ARTICLE_CATEGORIES = [
   "Hygiene & Safety",
   "Equipment",
   "Seasonal note",
+];
+
+const ARTICLE_SORT_OPTIONS = [
+  { key: "newest", label: "Newest first" },
+  { key: "a-z", label: "A–Z" },
+  { key: "read-time", label: "Shortest read" },
 ];
 
 export function createArticleSearchState() {
@@ -27,8 +34,6 @@ export function createArticleSearchState() {
 }
 
 export default function ArticleSearch({ value, onChange }) {
-  const sortingId = useId();
-
   const [articles, setArticles] = useState([]);
   const [options, setOptions] = useState(null);
   const [error, setError] = useState("");
@@ -337,22 +342,12 @@ export default function ArticleSearch({ value, onChange }) {
       )}
 
       {/* Pass sorting to the view without sorting or rendering results here. */}
-      <div className="flex items-center justify-end gap-related">
-        <label htmlFor={sortingId} className="text-small text-spicy-berry">
-          Sort:
-        </label>
-
-        <select
-          id={sortingId}
-          value={value.sort}
-          onChange={(event) => update({ sort: event.target.value })}
-          className="bg-transparent text-small text-spicy-berry"
-        >
-          <option value="newest">Newest first</option>
-          <option value="a-z">A–Z</option>
-          <option value="read-time">Shortest read</option>
-        </select>
-      </div>
+      <Sorting
+        value={value.sort}
+        onChange={(sort) => update({ sort })}
+        options={ARTICLE_SORT_OPTIONS}
+        ariaLabel="Sort articles"
+      />
 
       {!options && !error && (
         <p role="status">Loading search options…</p>
