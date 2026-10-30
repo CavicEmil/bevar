@@ -5,7 +5,13 @@
   min-height: 320px;
   overflow: hidden;
   border-radius: 24px;
-  background: var(--color-dark-humor, #620e28);
+  background: var(--marta-intro-bg, var(--color-dark-humor, #620e28));
+}
+
+.marta-intro-stage--inline {
+  --marta-intro-bg: var(--color-rose-fantasy, #ffe9f2);   /* match your token name */
+  min-height: 100dvh;          
+  border-radius: 24px;
 }
 
 .marta-intro-lockup {

@@ -119,7 +119,7 @@ export default function Layout() {
       )}
       {showBar && (
         
-          <WelcomeScreen />
+          <WelcomeScreen variant="inline" label="Loading content…" />
         
       )}
 
