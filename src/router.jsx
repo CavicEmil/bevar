@@ -59,7 +59,11 @@ export const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <Landing />,
+        element: (
+              <RequireAuth>
+                <Landing />
+              </RequireAuth>
+            ),
       },
       {
         path: "recipes",
@@ -149,7 +153,7 @@ export const router = createBrowserRouter([
       },
 
       /* Temporary component testing routes */
-      {
+/*       {
         path: "playground/magda",
         element: <MagdaPlayground />,
       },
@@ -169,7 +173,7 @@ export const router = createBrowserRouter([
       {
         path: "playground/josie",
         element: <JosiePlayground />,
-      },
+      }, */
     ],
   },
 ]);
